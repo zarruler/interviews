@@ -1,0 +1,39 @@
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready( function() {
+        $("A[href='#']").click( function() {
+            $("FORM[action='submit.php'] INPUT[type='checkbox']").each( function() {
+                $(this).prop('checked', !$(this).prop('checked'));
+            });
+         
+            var form_data = $('FORM').serialize();
+            if(form_data)
+                $.ajax({
+                      url: $("FORM").attr('action'),
+                      type: 'post',
+                      dataType: 'json',
+                      data: form_data,
+                      success: function( result ) {
+                        alert('sent');
+                      }
+                });
+            return false;
+        });
+    });
+</script>
+</head>
+<body>
+<form method="post" action="submit.php">
+<ul>
+    <li><input type="checkbox" name="chk[]" value="1" /></li>
+    <li><input type="checkbox" name="chk[]" value="2" /></li>
+    <li><input type="checkbox" name="chk[]" value="3" /></li>
+    <li><input type="checkbox" name="chk[]" value="4" /></li>
+    <li><input type="checkbox" name="chk[]" value="5" /></li>
+</ul>
+</form>
+<a href="#">Select all</a>
+</body>
+</html>

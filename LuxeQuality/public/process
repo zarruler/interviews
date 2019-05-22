@@ -1,0 +1,3 @@
+#!/bin/bash
+
+docker exec -it -u $(id -u):$(id -g) php_cli php index.php $1 $2

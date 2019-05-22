@@ -1,0 +1,124 @@
+MySql part1:
+Diagram: http://i.imgur.com/FHSlr2B.png
+
+Dump:
+attached sql-dump file. indexes and keys at the end of the file, not within the "create table".
+
+
+Mysql part2:
+
+1) CREATE TABLE `regions` ( `id` INT UNSIGNED NOT NULL AUTO_INCREMENT, `name` VARCHAR(100) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB CHARSET=utf8;
+
+2) ALTER TABLE `Branches` ADD `region_id` INT UNSIGNED NOT NULL AFTER `CompanyId`;
+   ALTER TABLE `Branches` ADD FOREIGN KEY (`region_id`) REFERENCES `regions`(`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+3)
+3.1) we can add and use a foreign key for this purpose, so once company deleted all related branches will be deleted as well.
+     ALTER TABLE `Branches` ADD FOREIGN KEY (`CompanyId`) REFERENCES `Companies`(`Id`) ON DELETE CASCADE ON UPDATE RESTRICT;
+
+     after this just delete a company
+     DELETE FROM `Companies` WHERE `Companies`.`Id` = 1
+
+3.2) without foreign key
+    DELETE `Companies`, `Branches` FROM `Companies` INNER JOIN `Branches` ON `Companies`.`Id` = `Branches`.`CompanyId` WHERE `Companies`.`Id` = 1
+
+4) using indexes depend on:
+   a) select queries and/or "order by" clauses
+   b) how often used inserts and selections for some table
+   c) size of the tables
+
+in this structure already exist primary keys.
+i would add foreign key as mentioned in 3.1) to avoid deleting queries like mentioned in 3.2)
+also i have added foreign key mentioned in point 2) to the table Branches
+
+in case we have a lot of searches by company or branch name brobaly i would add the key on `name` field in some table BUT it also depend on 
+  a) how big is table (if there just 100 entries index wont influence to the selection speed)
+  b) how often we do inserts coz indexes speed up selects but slow down inserts
+  c) indexes on varchar fields in general not very good idea coz they are much slower than indexes on numerical ...
+  d) finally will be required to see if index will speed up or not the query at all through the "explain".
+
+so there lot of things which influence to the decision about using indexes, their types, their amount and so on.
+
+
+PHP:
+
+first question rises is: this code used inside some framework or not ?
+1) if YES then should be used tools which this framework offer to access data and output representation
+2) if NO and this is just custom code in pure PHP then 
+   2.1) lets at least separate logic from representation
+        i would do it by implementing usage of some template engine like Twig, Blade, Smarty or whatever to
+        clean php code from the html, lets use twig syntax.
+   2.2) lets rename variables to something more understandable
+   2.3) move out functions to somewhere at least to some "helper" file for the beginning
+   2.4) in our case looks like function used just to sort results of mysql query so we can omit it in this code and improve mysql queries,
+        but coz it could be used somewhere else we wont just delete it but relocate somewhere for now.
+
+
+php scipt:
+
+.....
+$query = "
+        SELECT c.Name as c_name,
+               b.Name as b_name
+        FROM `Branches` b
+        LEFT JOIN `Companies` c ON c.id = b.CompanyId
+        ORDER BY c.Name, b.Name ASC
+";
+
+$data = $pdo->query($query)->fetchAll();
+
+$list_tpl = $twig->render('templates/something.html', $data);
+// then show it somewhere
+echo $list_tpl; 
+
+
+template file "templates/something.html":
+
+<table>
+{% for names in data %}
+    <tr><td>{{ names.c_name }}</td><td>{{ names.b_name }}</td></tr>
+{% endfor %}
+</table>
+
+
+JavaScript:
+
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready( function() {
+        $("A[href='#']").click( function() {
+            $("FORM[action='submit.php'] INPUT[type='checkbox']").each( function() {
+                $(this).prop('checked', !$(this).prop('checked'));
+            });
+         
+            var form_data = $("FORM").serialize();
+            if(form_data)
+                $.ajax({
+                      url: $("FORM").attr('action'),
+                      type: 'post',
+                      dataType: 'json',
+                      data: form_data,
+                      success: function( result ) {
+                        alert('sent');
+                      }
+                });
+            return false;
+        });
+    });
+</script>
+</head>
+<body>
+<form method="post" action="submit.php">
+<ul>
+    <li><input type="checkbox" name="chk[]" value="1" /></li>
+    <li><input type="checkbox" name="chk[]" value="2" /></li>
+    <li><input type="checkbox" name="chk[]" value="3" /></li>
+    <li><input type="checkbox" name="chk[]" value="4" /></li>
+    <li><input type="checkbox" name="chk[]" value="5" /></li>
+</ul>
+</form>
+<a href="#">Select all</a>
+</body>
+</html>

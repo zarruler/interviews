@@ -1,0 +1,17 @@
+{
+    "name": "worker",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Eugene S",
+            "email": "seugenev@gmail.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Services\\": "services",
+            "App\\": "app"
+        }
+    }
+}

@@ -1,0 +1,225 @@
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+<script type="text/javascript">
+    /*
+     * atributes value object to keep data transferred into the element object persistent
+    */
+    class AttrObj
+    {
+        constructor(name, value, id, checked=null) {
+            this.name = name;
+            this.value = value;
+            this.id = id;
+
+            if(checked)
+                this.checked = checked;
+        }
+    }
+
+    /*
+     * parent Elements class with the attributes setting and check for incomming data
+    */
+    class Element
+    {
+        constructor(elementAttr)
+        {
+            if(!(elementAttr instanceof AttrObj))
+                throw new Error('required AttrObj');
+
+            this.name = elementAttr.name;
+            this.value = elementAttr.value;
+            this.id = elementAttr.id;
+        }
+
+    }
+
+    /*
+     * form elements are pretty much the same so extending parent Element class
+     * with predefined attributes.
+     * created separate class for each element form so we can add some others form elements if required
+    */
+    class Button extends Element
+    {
+        generate()
+        {
+            let template = $("<input type=\"button\"/>");
+            template.prop('name', this.name);
+            template.prop('value', this.value);
+            template.prop('id', this.id);
+
+            return template;
+        } 
+    }
+
+
+    class Text extends Element
+    {
+        generate()
+        {
+            let template = $("<input type=\"text\"/>");
+            template.prop('name', this.name);
+            template.prop('value', this.value);
+            template.prop('id', this.id);
+
+            return template;
+        } 
+    }
+
+    /*
+     * checkboxes and radio buttons have additional attribute,
+     * so it is not a problem to add it
+    */
+    class Checkbox extends Element
+    {
+        constructor(elementAttr)
+        {
+             super(elementAttr);
+            this.checked = elementAttr.checked;
+        }
+
+        generate()
+        {
+            let template = $("<input type=\"checkbox\"/>");
+            template.prop('name', this.name);
+            template.prop('value', this.value);
+            template.prop('id', this.id);
+            template.prop('checked', this.checked);
+
+            return template;
+        } 
+    }
+
+    class Radio extends Element
+    {
+        constructor(elementAttr)
+        {
+            super(elementAttr);
+            this.checked = elementAttr.checked;
+        }
+
+        generate()
+        {
+            let template = $("<input type=\"radio\"/>");
+            template.prop('name', this.name);
+            template.prop('value', this.value);
+            template.prop('id', this.id);
+            template.prop('checked', this.checked);
+
+            return template;
+        } 
+    }
+
+    class label
+    {
+        constructor(text)
+        {
+            return $("<span>" + text + "</span>");
+        }
+    }
+    /*
+     * Factory class to generate form elements per request
+    */
+    class elementFactory
+    {
+        constructor(elementType, elementAttr)
+        {
+            switch (elementType) {
+                case 'button':
+                    let button = new Button(elementAttr);
+                    return button.generate();
+                case 'text':
+                    let text = new Text(elementAttr);
+                    return text.generate();
+                case 'check':
+                    let checkbox = new Checkbox(elementAttr);
+                    return checkbox.generate();
+                case 'radio':
+                    let radio = new Radio(elementAttr);
+                    return radio.generate();
+                default:
+                    console.log('requested shape is absent ' + elementType);
+                break;
+            }
+        }
+    }
+
+
+    function drawBtn(Obj, selector)
+    {
+        $(selector).empty();
+        $.each(Obj, function( index, dataObj ) {
+            let name = 'btnDataSet' + index;
+            let value = 'btnDataSet' + (index+1);
+            let id = 'btnDataSet' + index;
+            let elAttr = new AttrObj(name, value, id);
+
+            let element = new elementFactory('button', elAttr);
+            element.click(function(){
+                drawElements(Obj[index], "#myForm > #elements");
+            });
+
+            $(selector).append(element);
+        });
+    }
+
+    function drawElements(dataObj, selector)
+    {
+        $(selector).empty();
+        $.each(dataObj, function( detailsName, detailsObj ) {
+            $(selector).append('<br/>');
+            if(detailsObj.v instanceof Object) {
+                let span = new label(detailsName + ': ');
+                $(selector).append(span);
+                $.each(detailsObj.v, function( elementValue, elementChecked ) {
+                    // i prefer to introduce variables instead of direct insert into the object method
+                    // this way looks like copy-paste but easier to read code and understand what is going on
+                    let name = detailsName + '[]';
+                    let value = elementValue;
+                    let id = detailsObj.t + detailsName;
+                    let checked = (elementChecked == 1) ? true : false ;
+                    
+                    let elAttr = new AttrObj(name, value, id, checked);
+
+                    let element = new elementFactory(detailsObj.t, elAttr);
+                    let span = new label(value);
+                    $(selector).append(span).append(element);
+                });
+            } else {
+                let name = detailsName;
+                let value = detailsObj.v;
+                let id = detailsObj.t + detailsName;
+                
+                let elAttr = new AttrObj(name, value, id);
+
+                let element = new elementFactory(detailsObj.t, elAttr);
+                let span = new label(name);
+                $(selector).append(span).append(element);
+            }    
+        });
+    }
+
+$(document).ready( function() {
+    let json = '[{"age":{"t":"text","v":25},"speed":{"t":"text","v":55},"color":{"t":"radio","v":{"red":0,"yellow":1}},"fruit":{"t":"check","v":{"apple":1,"orange":0,"watermelon":1,"peach":0}}},{"age":{"t":"text","v":35},"speed":{"t":"text","v":45},"color":{"t":"radio","v":{"green":0}},"fruit":{"t":"check","v":{"apple":0,"banana":1,"blueberry":0,"strawberry":1,"kiwi":0}}}]';
+
+    try {
+        let obj_arr = JSON.parse(json);
+
+        drawBtn(obj_arr, "#myForm > #buttons");
+        drawElements(obj_arr[0], "#myForm > #elements");
+    } catch (e) {
+        console.log(e.name + ': ' + e.message);
+    }
+
+});
+</script>
+</head>
+<body>
+<form method="post" action="submit.php" id="myForm">
+    <div id="elements">
+    </div>
+    <div id="buttons">
+    </div>
+</form>
+</body>
+</html>

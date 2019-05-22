@@ -1,0 +1,11 @@
+version: '3.7'
+
+services:
+  cli:
+    image: php:7.3-cli
+    container_name: php_cli
+    volumes:
+      - ./:/public/
+    working_dir: /public/public/
+    stdin_open: true
+    tty: true

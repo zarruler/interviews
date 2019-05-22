@@ -1,0 +1,1 @@
+SELECT id, COUNT(*) cnt FROM table GROUP BY id HAVING cnt > 1;
