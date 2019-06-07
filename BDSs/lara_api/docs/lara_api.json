@@ -1,0 +1,779 @@
+{
+  "front-version": "2.19.1",
+  "version": 3,
+  "nodes": [
+    {
+      "type": "Project",
+      "id": "304c13d3-0cf3-4891-ab1f-03ea00dfdf00",
+      "lastModified": "2019-04-07T23:53:19.022+03:00",
+      "name": "Lara.api"
+    },
+    {
+      "type": "Service",
+      "id": "ef555d00-21c7-4ffa-8157-4ca45bdc4942",
+      "lastModified": "2019-04-06T18:51:24.914+03:00",
+      "name": "Category",
+      "parentId": "304c13d3-0cf3-4891-ab1f-03ea00dfdf00"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "requestBody": true,
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+        "name": "POST"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": [
+            {
+              "enabled": true,
+              "type": "Text",
+              "name": "name",
+              "value": "Some Category Name"
+            },
+            {
+              "enabled": true,
+              "type": "Text",
+              "name": "api_token",
+              "value": "ed44cb534e9662b51876b44d43a2078b"
+            }
+          ]
+        },
+        "bodyType": "Form",
+        "autoSetLength": true,
+        "textBody": "We are sorry, but Chrome API does not allow to get a response body for redirect."
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "lara.api",
+        "path": "/api/category"
+      },
+      "id": "1596caaa-f165-453a-ac4b-3e665dc88f72",
+      "lastModified": "2019-04-06T23:50:37.489+03:00",
+      "name": "Add new",
+      "headers": [
+        {
+          "enabled": true,
+          "name": "Content-Type",
+          "value": "application/x-www-form-urlencoded"
+        },
+        {
+          "enabled": true,
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "metaInfo": {
+        "ownerId": "google-oauth2|110784275798858860410"
+      },
+      "parentId": "ef555d00-21c7-4ffa-8157-4ca45bdc4942"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "requestBody": true,
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+        "name": "POST"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": [
+            {
+              "enabled": true,
+              "type": "Text",
+              "name": "_method",
+              "value": "DELETE"
+            },
+            {
+              "enabled": true,
+              "type": "Text",
+              "name": "api_token",
+              "value": "ed44cb534e9662b51876b44d43a2078b"
+            }
+          ]
+        },
+        "bodyType": "Form",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "lara.api",
+        "path": "/api/category/16"
+      },
+      "id": "c18438be-6b20-4b0c-acc9-6c6a6524e652",
+      "lastModified": "2019-04-07T01:43:29.556+03:00",
+      "name": "Delete",
+      "headers": [
+        {
+          "enabled": true,
+          "name": "Content-Type",
+          "value": "application/x-www-form-urlencoded"
+        },
+        {
+          "enabled": true,
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "metaInfo": {
+        "ownerId": "google-oauth2|110784275798858860410"
+      },
+      "parentId": "ef555d00-21c7-4ffa-8157-4ca45bdc4942"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+        "name": "GET"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "lara.api",
+        "path": "/api/category/2"
+      },
+      "id": "b7e3a049-4cf3-4e08-904c-ddf61ac05f4f",
+      "lastModified": "2019-04-06T22:26:37.693+03:00",
+      "name": "Details",
+      "headers": [],
+      "metaInfo": {
+        "ownerId": "google-oauth2|110784275798858860410"
+      },
+      "parentId": "ef555d00-21c7-4ffa-8157-4ca45bdc4942"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+        "name": "GET"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "lara.api",
+        "path": "/api/category/all"
+      },
+      "id": "664a5bc2-76ff-4fdd-927c-90d3174e2c07",
+      "lastModified": "2019-04-06T18:51:51.458+03:00",
+      "name": "Get All",
+      "headers": [],
+      "metaInfo": {
+        "ownerId": "google-oauth2|110784275798858860410"
+      },
+      "parentId": "ef555d00-21c7-4ffa-8157-4ca45bdc4942"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "requestBody": true,
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.4",
+        "name": "PUT"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": [
+            {
+              "enabled": true,
+              "type": "Text",
+              "name": "_method",
+              "value": "PUT"
+            },
+            {
+              "enabled": true,
+              "type": "Text",
+              "name": "name",
+              "value": "cars"
+            },
+            {
+              "enabled": true,
+              "type": "Text",
+              "name": "api_token",
+              "value": "ed44cb534e9662b51876b44d43a2078b"
+            }
+          ]
+        },
+        "bodyType": "Form",
+        "autoSetLength": true,
+        "textBody": "We are sorry, but Chrome API does not allow to get a response body for redirect."
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "lara.api",
+        "path": "/api/category/1"
+      },
+      "id": "d2d09d83-5a81-4b79-8009-7163388c6c61",
+      "lastModified": "2019-04-06T23:49:30.995+03:00",
+      "name": "Update",
+      "headers": [
+        {
+          "enabled": true,
+          "name": "Content-Type",
+          "value": "application/x-www-form-urlencoded"
+        },
+        {
+          "enabled": true,
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "metaInfo": {
+        "ownerId": "google-oauth2|110784275798858860410"
+      },
+      "parentId": "ef555d00-21c7-4ffa-8157-4ca45bdc4942"
+    },
+    {
+      "type": "Service",
+      "id": "46e214af-8729-4964-a4b7-f866b8017342",
+      "lastModified": "2019-04-06T18:52:57.366+03:00",
+      "name": "Item",
+      "parentId": "304c13d3-0cf3-4891-ab1f-03ea00dfdf00"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "requestBody": true,
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+        "name": "POST"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": [
+            {
+              "enabled": true,
+              "type": "Text",
+              "name": "name",
+              "value": "super name"
+            },
+            {
+              "enabled": true,
+              "type": "Text",
+              "name": "price",
+              "value": "44.66"
+            },
+            {
+              "enabled": true,
+              "type": "Text",
+              "name": "api_token",
+              "value": "ed44cb534e9662b51876b44d43a2078b"
+            }
+          ]
+        },
+        "bodyType": "Form",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "lara.api",
+        "path": "/api/product"
+      },
+      "id": "82af1980-cb67-4a0c-aeaf-f6c127bdf063",
+      "lastModified": "2019-04-07T17:24:49.965+03:00",
+      "name": "Add new",
+      "headers": [
+        {
+          "enabled": true,
+          "name": "Content-Type",
+          "value": "application/x-www-form-urlencoded"
+        },
+        {
+          "enabled": true,
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "metaInfo": {
+        "ownerId": "google-oauth2|110784275798858860410"
+      },
+      "parentId": "46e214af-8729-4964-a4b7-f866b8017342"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "requestBody": true,
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+        "name": "POST"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": [
+            {
+              "enabled": true,
+              "type": "Text",
+              "name": "name",
+              "value": "attached name"
+            },
+            {
+              "enabled": true,
+              "type": "Text",
+              "name": "price",
+              "value": "55.77"
+            },
+            {
+              "enabled": true,
+              "type": "Text",
+              "name": "api_token",
+              "value": "ed44cb534e9662b51876b44d43a2078b"
+            }
+          ]
+        },
+        "bodyType": "Form",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "lara.api",
+        "path": "/api/product/category/3"
+      },
+      "id": "738f1380-f879-4db2-a121-aa3ad6273e42",
+      "lastModified": "2019-04-07T17:32:21.185+03:00",
+      "name": "Add new to category",
+      "headers": [
+        {
+          "enabled": true,
+          "name": "Content-Type",
+          "value": "application/x-www-form-urlencoded"
+        },
+        {
+          "enabled": true,
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "metaInfo": {
+        "ownerId": "google-oauth2|110784275798858860410"
+      },
+      "parentId": "46e214af-8729-4964-a4b7-f866b8017342"
+    },
+    {
+      "uriEditor": true,
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+        "name": "GET"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "lara.api",
+        "path": "/api/category/3/items"
+      },
+      "id": "a33b275b-0623-4d37-875b-8ea79a210bb1",
+      "lastModified": "2019-04-07T17:52:42.898+03:00",
+      "name": "All in category",
+      "headers": [],
+      "metaInfo": {
+        "ownerId": "google-oauth2|110784275798858860410"
+      },
+      "parentId": "46e214af-8729-4964-a4b7-f866b8017342"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "requestBody": true,
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+        "name": "POST"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": [
+            {
+              "enabled": true,
+              "type": "Text",
+              "name": "_method",
+              "value": "DELETE"
+            },
+            {
+              "enabled": true,
+              "type": "Text",
+              "name": "api_token",
+              "value": "ed44cb534e9662b51876b44d43a2078b"
+            }
+          ]
+        },
+        "bodyType": "Form",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "lara.api",
+        "path": "/api/product/9"
+      },
+      "id": "f80f1c80-539a-4c95-8fda-dd504136c2d3",
+      "lastModified": "2019-04-07T17:00:33.634+03:00",
+      "name": "Delete",
+      "headers": [
+        {
+          "enabled": true,
+          "name": "Content-Type",
+          "value": "application/x-www-form-urlencoded"
+        },
+        {
+          "enabled": true,
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "metaInfo": {
+        "ownerId": "google-oauth2|110784275798858860410"
+      },
+      "parentId": "46e214af-8729-4964-a4b7-f866b8017342"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+        "name": "GET"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "lara.api",
+        "path": "/api/product/3"
+      },
+      "id": "5762ba47-74d3-4284-8fcd-7187526e64f9",
+      "lastModified": "2019-04-07T18:19:54.433+03:00",
+      "name": "Details",
+      "headers": [],
+      "metaInfo": {
+        "ownerId": "google-oauth2|110784275798858860410"
+      },
+      "parentId": "46e214af-8729-4964-a4b7-f866b8017342"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "requestBody": true,
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.4",
+        "name": "PUT"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": [
+            {
+              "enabled": true,
+              "type": "Text",
+              "name": "_method",
+              "value": "PUT"
+            },
+            {
+              "enabled": true,
+              "type": "Text",
+              "name": "name",
+              "value": "bmwwww"
+            },
+            {
+              "enabled": true,
+              "type": "Text",
+              "name": "price",
+              "value": "44444.44"
+            },
+            {
+              "enabled": true,
+              "type": "Text",
+              "name": "api_token",
+              "value": "ed44cb534e9662b51876b44d43a2078b"
+            }
+          ]
+        },
+        "bodyType": "Form",
+        "autoSetLength": true,
+        "textBody": "We are sorry, but Chrome API does not allow to get a response body for redirect."
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "lara.api",
+        "path": "/api/product/1"
+      },
+      "id": "e04a83b0-dc45-4be2-b8da-2d2b4fe8b2f1",
+      "lastModified": "2019-04-07T18:09:57.468+03:00",
+      "name": "Update",
+      "headers": [
+        {
+          "enabled": true,
+          "name": "Content-Type",
+          "value": "application/x-www-form-urlencoded"
+        },
+        {
+          "enabled": true,
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "metaInfo": {
+        "ownerId": "google-oauth2|110784275798858860410"
+      },
+      "parentId": "46e214af-8729-4964-a4b7-f866b8017342"
+    },
+    {
+      "type": "Service",
+      "id": "41176dc5-9d45-4a18-afa3-b76880152e85",
+      "lastModified": "2019-04-07T18:26:50.261+03:00",
+      "name": "User",
+      "parentId": "304c13d3-0cf3-4891-ab1f-03ea00dfdf00"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "requestBody": true,
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+        "name": "POST"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": [
+            {
+              "enabled": true,
+              "type": "Text",
+              "name": "email",
+              "value": "seugenev@gmail.com"
+            },
+            {
+              "enabled": true,
+              "type": "Text",
+              "name": "password",
+              "value": "jack"
+            }
+          ]
+        },
+        "bodyType": "Form",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "lara.api",
+        "path": "/api/login"
+      },
+      "id": "df1e65f1-b5da-42ad-beeb-8afcca008088",
+      "lastModified": "2019-04-07T23:53:19.023+03:00",
+      "name": "Login",
+      "headers": [
+        {
+          "enabled": true,
+          "name": "Content-Type",
+          "value": "application/x-www-form-urlencoded"
+        },
+        {
+          "enabled": true,
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "metaInfo": {
+        "ownerId": "google-oauth2|110784275798858860410"
+      },
+      "parentId": "41176dc5-9d45-4a18-afa3-b76880152e85"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "requestBody": true,
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+        "name": "POST"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": [
+            {
+              "enabled": true,
+              "type": "Text",
+              "name": "name",
+              "value": "Vasia Ivanov"
+            },
+            {
+              "enabled": true,
+              "type": "Text",
+              "name": "password",
+              "value": "jack"
+            },
+            {
+              "enabled": true,
+              "type": "Text",
+              "name": "email",
+              "value": "sdfds1@sdfsd.com"
+            }
+          ]
+        },
+        "bodyType": "Form",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "lara.api",
+        "path": "/api/register"
+      },
+      "id": "e43cf2e8-cca4-4951-8c43-730a1636f086",
+      "lastModified": "2019-04-07T22:16:44.047+03:00",
+      "name": "Register",
+      "headers": [
+        {
+          "enabled": true,
+          "name": "Content-Type",
+          "value": "application/x-www-form-urlencoded"
+        },
+        {
+          "enabled": true,
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "metaInfo": {
+        "ownerId": "google-oauth2|110784275798858860410"
+      },
+      "parentId": "41176dc5-9d45-4a18-afa3-b76880152e85"
+    }
+  ]
+}
