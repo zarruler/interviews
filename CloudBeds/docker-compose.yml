@@ -1,0 +1,58 @@
+version: '3.7'
+
+services:
+  db:
+    image: mariadb
+    container_name: db_api
+    volumes:
+      - ./db:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "jackjack"
+      MYSQL_DATABASE: "test_loc"
+      MYSQL_USER: "jack"
+      MYSQL_PASSWORD: "jackjack"
+    ports:
+      - "3306:3306"
+
+  web:
+    image: seugenev/web_server
+    container_name: web_server_api
+    depends_on:
+      - db
+    volumes:
+      - ./docker_configs/hosts:/etc/hosts
+      - ./docker_configs/httpd.conf:/etc/apache2/apache2.conf
+      - ./docker_configs/vhost.conf:/etc/apache2/sites-available/000-default.conf
+      - ./:/var/www/html/
+    ports:
+      - "80:80"
+    environment:
+      - VIRTUAL_HOST=localhost,test.loc
+    stdin_open: true
+    tty: true
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: pma_api
+    depends_on:
+      - web
+      - db
+    environment:
+     PMA_HOST: "db"
+     PMA_PORT: 3306
+     PMA_ARBITRARY: 1
+    restart: always
+    ports:
+      - 8080:80
+    volumes:
+     - ./docker_configs/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php
+     - ./sessions:/sessions
+
+#  composer:
+#    restart: 'no'
+#    container_name: composer
+#    image: seugenev/composer2:latest
+#    working_dir: /var/www/html
+#    command: composer install -d /var/www/html
+#    volumes:
+#    - ./public:/var/www/html/

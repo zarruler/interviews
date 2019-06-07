@@ -1,0 +1,25 @@
+{
+    "name": "interval",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Eugene S",
+            "email": "seugenev@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.1.3",
+        "ext-json": "*",
+        "ext-pdo": "*",
+        "symfony/http-foundation": "^4.2",
+        "php-di/php-di": "^6.0",
+        "nikic/fast-route": "^1.3",
+        "twig/twig": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "App",
+            "Core\\": "Core"
+        }
+    }
+}
