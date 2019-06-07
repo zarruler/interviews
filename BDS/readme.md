@@ -1,4 +1,4 @@
-[описание решения](./lara_api/readme.md)
+[описание решения](https://github.com/seugenev/lara_api)
 
 Описание задачи
 =======
