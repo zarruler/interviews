@@ -33,7 +33,7 @@ class Mysql implements DatabaseInterface
                     ';charset=' . $this->container->get('db.charset');
         $this->connection = new PDO($dsn, $this->container->get('db.user'), $this->container->get('db.password'));
 
-        // Throw an Exception when an error occurs
+        // TODO: Throw an Exception when an error occurs
         $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         return $this;

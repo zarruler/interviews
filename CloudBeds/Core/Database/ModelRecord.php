@@ -8,11 +8,13 @@ namespace Core\Database;
 
 class ModelRecord
 {
+    const DEFAULT_DATE_FORMAT = 'Y-m-d';
+    protected $dateFormat = self::DEFAULT_DATE_FORMAT;
+
     protected $modelFieldsList = array();
 
     public function __construct(array $data)
     {
-//var_dump($data);
         foreach($data as $fieldName => $fieldValue)
         {
             if(is_numeric($fieldName))
@@ -21,6 +23,16 @@ class ModelRecord
             $setter = $this->getSetterByFieldName($fieldName);
             $this->$setter($this->checkDate((string) $fieldValue));
         }
+    }
+
+    /**
+     * @param string $format
+     * @return ModelRecord
+     */
+    public function setDateFormat($format = self::DEFAULT_DATE_FORMAT) : ModelRecord
+    {
+        $this->dateFormat = $format;
+        return $this;
     }
 
     /**
@@ -36,7 +48,10 @@ class ModelRecord
         return $this->modelFieldsList;
     }
 
-
+    /**
+     * @param string $fieldName
+     * @return string
+     */
     public function getSetterByFieldName(string $fieldName)
     {
         return 'set' . implode('', array_map('ucfirst', explode('_', $fieldName)));
@@ -51,7 +66,7 @@ class ModelRecord
      */
     public function checkDate($value)
     {
-        $dateTime = \DateTime::createFromFormat('Y-m-d', $value);
+        $dateTime = \DateTime::createFromFormat($this->dateFormat, $value);
         $errors = \DateTime::getLastErrors();
 
         if ($dateTime && empty($errors['warning_count']))

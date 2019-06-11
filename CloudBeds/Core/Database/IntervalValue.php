@@ -8,8 +8,6 @@ namespace Core\Database;
 
 class IntervalValue extends ModelRecord
 {
-    const DEFAULT_DATE_FORMAT = 'Y-m-d';
-    protected $dateFormat = self::DEFAULT_DATE_FORMAT;
     /**
      * @var int
      */
@@ -29,16 +27,6 @@ class IntervalValue extends ModelRecord
      * @var float
      */
     public $price;
-
-    /**
-     * @param string $format
-     * @return IntervalValue
-     */
-    public function setDateFormat($format = self::DEFAULT_DATE_FORMAT) : IntervalValue
-    {
-        $this->dateFormat = $format;
-        return $this;
-    }
 
     /**
      * @return int
