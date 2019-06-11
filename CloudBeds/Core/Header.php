@@ -26,7 +26,7 @@ class Header
         $this->response = $response;
     }
 
-    public function sendHeader($content = '')
+    public function send($content = '')
     {
         if (is_array($content))
             $this->setJsonContent($content);
@@ -42,7 +42,7 @@ class Header
     public function sendNotFound($content = '')
     {
         $this->response->setStatusCode(Response::HTTP_NOT_FOUND);
-        $this->sendHeader($content);
+        $this->send($content);
 
         return $this;
     }
@@ -51,27 +51,23 @@ class Header
     public function sendMethodNotAllowed($content = '')
     {
         $this->response->setStatusCode(Response::HTTP_METHOD_NOT_ALLOWED);
-        $this->sendHeader($content);
+        $this->send($content);
 
         return $this;
     }
 
-    public function sendCode($content = '', int $code)
+    /**
+     * @param string|array $content
+     * @param int $code
+     * @return $this
+     */
+    public function sendCode($content = '', int $code = Response::HTTP_OK)
     {
         $this->response->setStatusCode($code);
-        $this->sendHeader($content);
+        $this->send($content);
 
         return $this;
     }
-
-
-    public function setHeader(int $statusCode)
-    {
-        $this->response->setStatusCode($statusCode);
-
-        return $this;
-    }
-
 
     public function setCharset(string $charset)
     {

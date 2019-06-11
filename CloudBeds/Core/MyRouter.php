@@ -1,10 +1,5 @@
 <?php
 
-/*
- * this router not used just left it for myself
- * instead of it used Route\Router.php
- */
-
 namespace Core;
 
 class MyRouter
