@@ -115,22 +115,117 @@ class IntervalController extends Controller
                             $intervalModel->edit($dbInterval);
                             echo 'done';
 
+                        } // if start dates identical then adding new interval and updating existing interval start date
+                          // with the new interval end date
+                        elseif ($newInterval->getStartDate() == $dbInterval->getStartDate()) {
+
+                            $intervalModel->add($newInterval);
+
+                            $updStartDate = $newInterval->getEndDate()->add(new \DateInterval('P1D'));
+                            $dbInterval->setStartDate($updStartDate);
+                            $intervalModel->edit($dbInterval);
+                        } // if END dates identical then adding new interval and updating existing interval END date
+                          // with the new interval start date
+                        elseif ($newInterval->getEndDate() == $dbInterval->getEndDate()) {
+
+                            $intervalModel->add($newInterval);
+
+                            $updEndDate = $newInterval->getStartDate()->sub(new \DateInterval('P1D'));
+                            $dbInterval->setEndDate($updEndDate);
+                            $intervalModel->edit($dbInterval);
+
+                        } // new interval somewhere between start and end of the existing interval
+                          // in this case we have 2 new intervals to add and one existing to modify
+                        else {
+                            // ORDER IS IMPORTANT !!!
+                            // firstly adding new interval
+                            $intervalModel->add($newInterval);
+
+                            // then creating another new interval based on first new interval END_date+1 as start date and
+                            // existing interval END date as end date
+                            $updStartDate = $newInterval->getEndDate()->add(new \DateInterval('P1D'));
+                            $secondNewInterval = new IntervalValue([
+                                'start_date' => $updStartDate,
+                                'end_date' => $dbInterval->getEndDate(),
+                                'price' => $dbInterval->getPrice()
+                            ]);
+                            $intervalModel->add($secondNewInterval);
+
+                            // updating existing interval
+                            $updEndDate = $newInterval->getStartDate()->sub(new \DateInterval('P1D'));
+                            $dbInterval->setEndDate($updEndDate);
+                            $intervalModel->edit($dbInterval);
+
                         }
                     }
 
                 } elseif ($dbInterval->getIntersect() == 2) { // 2 # NEW START intersect or equal existing END
+                    if ($dbInterval->getPrice() == $newInterval->getPrice()) {
+                        // then intervals joined. update existing interval end with the end from new interval
+                        // remaining existing interval start
+                        $dbInterval->setEndDate($newInterval->getEndDate());
+                        $intervalModel->edit($dbInterval);
+                    } else {
+                        // if prices different, then inserting new interval and updating existing END with the NEW_start-1
+                        $intervalModel->add($newInterval);
+
+                        $updEndDate = $newInterval->getStartDate()->sub(new \DateInterval('P1D'));
+                        $dbInterval->setEndDate($updEndDate);
+                        $intervalModel->edit($dbInterval);
+                    }
                 } elseif ($dbInterval->getIntersect() == 3) { // 3 # NEW START JOINS existing END
+                    if ($dbInterval->getPrice() == $newInterval->getPrice()) {
+                        // expanding existing range. existing END update with the new END
+                        $dbInterval->setEndDate($newInterval->getEndDate());
+                        $intervalModel->edit($dbInterval);
+                    } else { // just add new interval
+                        $intervalModel->add($newInterval);
+                    }
                 } elseif ($dbInterval->getIntersect() == 4) { // 4 # NEW END intersect or equal existing START
+                    if ($dbInterval->getPrice() == $newInterval->getPrice()) {
+                        // then intervals joined. update existing interval START with the START from new interval
+                        // remaining existing interval END
+                        $dbInterval->setStartDate($newInterval->getStartDate());
+                        $intervalModel->edit($dbInterval);
+                    } else {
+                        // if prices different, then inserting new interval and updating existing START with the NEW_end+1
+                        $intervalModel->add($newInterval);
+
+                        $updEndDate = $newInterval->getEndDate()->add(new \DateInterval('P1D'));
+                        $dbInterval->setStartDate($updEndDate);
+                        $intervalModel->edit($dbInterval);
+                    }
                 } elseif ($dbInterval->getIntersect() == 5) { // 5 # NEW END JOINS existing START
+                    if ($dbInterval->getPrice() == $newInterval->getPrice()) {
+                        // expanding existing range. existing START update with the new START
+                        $dbInterval->setStartDate($newInterval->getStartDate());
+                        $intervalModel->edit($dbInterval);
+                    } else {// just add new interval
+                        $intervalModel->add($newInterval);
+                    }
                 } elseif ($dbInterval->getIntersect() == 6) { // 6 # NEW START-END range is wide and include already existing ranges (even few)
+                    // delete all existing intervals and insert NEW interval
+                    $ids = [];
+                    foreach ($data as $key => $databaseInterval) {
+                        $ids[] = $databaseInterval->getId();
+                    }
+
+                    if ($intervalModel->delete($ids) > 0)
+                        $intervalModel->add($newInterval);
                 }
                 break;
             case 2: // both sides intersection
 
                 break;
             default: // NEW range is wide and include one or more existing ranges
-                // delete all rows from $data
-                // insert $newInterval
+                // delete all existing intervals and insert NEW interval
+                $ids = [];
+                foreach ($data as $key => $databaseInterval) {
+                    $ids[] = $databaseInterval->getId();
+                }
+
+                if ($intervalModel->delete($ids) > 0)
+                    $intervalModel->add($newInterval);
 
         }
 /*

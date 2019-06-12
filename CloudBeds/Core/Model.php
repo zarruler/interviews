@@ -143,6 +143,26 @@ abstract class Model
     }
 
     /**
+     * @param string $query
+     * @param array $ids in format [1,2,5,7..xxx]
+     * @return int
+     * @throws \Exception
+     */
+    public function del(string $query, array $ids) : int
+    {
+        $q = $this->db->prepare($query);
+
+        if(!$q->execute($ids))
+            throw new \Exception('Query Failed');
+
+        $rowsAffected = $q->rowCount();
+        if($rowsAffected > 0)
+            $this->cleanCollection($ids);
+
+        return $rowsAffected;
+    }
+
+    /**
      * this function fetchStyle has higher priority than model $this->fetchMode
      * if $overwriteStyle > 0 then $this->fetchMode will be overwritten with the $fetchStyle
      *
@@ -186,6 +206,16 @@ abstract class Model
     protected function updateCollection(ModelRecord $entityToUpdate) : void
     {
         $this->collection[$entityToUpdate->getId()] = $entityToUpdate;
+    }
+
+    /**
+     * delete from the collection elements provided in array
+     *
+     * @param array $ids
+     */
+    protected function cleanCollection(array $ids) : void
+    {
+        $this->collection = array_diff_key($this->collection, array_combine(array_values($ids), array_values($ids)));
     }
 
     /**

@@ -109,4 +109,34 @@ class Interval extends Model
 
     }
 
+    /**
+     * accept array of integers, array of IntervalValue objects or mix of both
+     * @param int[]|IntervalValue[] $data
+     * @throws \Exception
+     * @return int
+     */
+    public function delete(array $data) : int
+    {
+        $ids = [];
+        $rowsAffected = 0;
+        foreach ($data as $value) {
+            $value instanceof IntervalValue ? $value = $value->getId() : null;
+
+            if ($id = filter_var($value, FILTER_VALIDATE_INT))
+                $ids[] = $id;
+        }
+
+        if(!empty($ids))
+        {
+            $query = "
+                DELETE FROM " . $this->tableName . " 
+                WHERE id in (" . str_repeat("?,", count($ids) - 1) . "?)
+            ";
+
+            $rowsAffected = $this->del($query, $ids);
+            return $rowsAffected;
+       }
+
+        return $rowsAffected;
+    }
 }
