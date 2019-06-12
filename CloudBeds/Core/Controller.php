@@ -25,9 +25,9 @@ class Controller
     /**
      * @param string $modelName
      * @param string|NULL $namespace
-     * @return ModelInterface
+     * @return mixed
      */
-    public function getModel(string $modelName, string $namespace = NULL) : ModelInterface
+    public function getModel(string $modelName, string $namespace = NULL)
     {
         $namespace = $namespace ?? Model::MODEL_NAMESPACE;
         return $this->container->get($namespace.$modelName);

@@ -5,6 +5,7 @@
 
 namespace Core\Database;
 
+use Core\Exceptions\InvalidDateTimeFormat;
 
 class IntervalValue extends ModelRecord
 {
@@ -47,12 +48,17 @@ class IntervalValue extends ModelRecord
     }
 
     /**
-     * @param string $format
-     * @return string
+     * @param string $toFormat
+     * @return \DateTime|string
+     * @throws InvalidDateTimeFormat
      */
-    public function getStartDate(string $format = self::DEFAULT_DATE_FORMAT): string
+    public function getStartDate(string $toFormat = '')
     {
-        return $this->start_date->format($format);
+        // a bit of trash coding :)
+        if (!empty($toFormat) && !$formatted = $this->start_date->format($toFormat))
+            throw new InvalidDateTimeFormat();
+
+        return $formatted ?? $this->start_date;
     }
 
     /**
@@ -67,12 +73,16 @@ class IntervalValue extends ModelRecord
     }
 
     /**
-     * @param string $format
-     * @return string
+     * @param string $toFormat
+     * @return \DateTime|string
+     * @throws InvalidDateTimeFormat
      */
-    public function getEndDate(string $format = self::DEFAULT_DATE_FORMAT): string
+    public function getEndDate(string $toFormat = '')
     {
-        return $this->end_date->format($format);
+        if (!empty($toFormat) && !$formatted = $this->end_date->format($toFormat))
+            throw new InvalidDateTimeFormat();
+
+        return $formatted ?? $this->end_date;
     }
 
     /**

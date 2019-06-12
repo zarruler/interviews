@@ -81,9 +81,9 @@ class IntervalController extends Controller
         /**
          * @var $interval \App\Models\Interval
          */
-        $interval = $this->getModel('Interval');
-        $data = $interval->getIntervals($startDate, $endDate);
-var_dump($data[0]->toArray());
+        $intervalModel = $this->getModel('Interval');
+        $data = $intervalModel->getIntervals($startDate, $endDate);
+//var_dump($data);
 
         $newInterval = new IntervalValue([
 //            'id' => 0,
@@ -92,18 +92,38 @@ var_dump($data[0]->toArray());
             'price' => $price
         ]);
 
+        // TODO: refactor this hell to the command, strategy and chain of responsibility :)
         switch (count($data)) {
             case 0: // simple insert, no intersections
 
-                $interval = $this->getModel('Interval');
-                $interval->add($newInterval);
+                $intervalModel = $this->getModel('Interval');
+                $intervalModel->add($newInterval);
                 break;
             case 1: // left or right intersection OR inclusion
+                reset($data);
+                $dbInterval = current($data);
 
-                if ($data[0]->getIntersect() == 1){ // inner inclusion
-                    echo 'hello';
+                if ($dbInterval->getIntersect() == 1) {       // 1 # NEW START-END range is between existing start-end range or identical
+                    if ($dbInterval->getPrice() == $newInterval->getPrice()) {
+                         // do nothing
+                    } else { // start algorithm
+                        // checking if both start and end dates are identical then required to
+                        // update existing interval with the new data from the new interval (in our case update price)
+                        if($newInterval->getStartDate() == $dbInterval->getStartDate() && $newInterval->getEndDate() == $dbInterval->getEndDate()) {
+
+                            $dbInterval->setPrice($newInterval->getPrice());
+                            $intervalModel->edit($dbInterval);
+                            echo 'done';
+
+                        }
+                    }
+
+                } elseif ($dbInterval->getIntersect() == 2) { // 2 # NEW START intersect or equal existing END
+                } elseif ($dbInterval->getIntersect() == 3) { // 3 # NEW START JOINS existing END
+                } elseif ($dbInterval->getIntersect() == 4) { // 4 # NEW END intersect or equal existing START
+                } elseif ($dbInterval->getIntersect() == 5) { // 5 # NEW END JOINS existing START
+                } elseif ($dbInterval->getIntersect() == 6) { // 6 # NEW START-END range is wide and include already existing ranges (even few)
                 }
-
                 break;
             case 2: // both sides intersection
 

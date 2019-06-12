@@ -2,6 +2,8 @@
 
 namespace Core;
 
+use Core\Database\IntervalValue;
+use Core\Database\ModelRecord;
 use PDO;
 use Psr\Container\ContainerInterface;
 
@@ -9,7 +11,7 @@ use Psr\Container\ContainerInterface;
  * Base model
  *
  */
-class Model
+abstract class Model
 {
     const DB_NAMESPACE = '\\Core\\Database\\';
     const MODEL_NAMESPACE = '\\App\\Models\\';
@@ -85,46 +87,59 @@ class Model
         return $this;
     }
 
-
-    protected function fillCollection(array $data)
+    /**
+     *
+     * @param array $data
+     * @throws \ReflectionException
+     */
+    protected function fillCollection(array $data) : void
     {
         $recordValueObj = self::DB_NAMESPACE . ((new \ReflectionClass($this))->getShortName()) . 'Value';
         foreach($data as $key => $dataArr) {
-            $this->collection[$key] = new $recordValueObj($dataArr);
+            $this->collection[$dataArr['id']] = new $recordValueObj($dataArr);
         }
-
     }
+
 
     /**
      * @param string $query
      * @param array $params
+     * @param ModelRecord $record
      * @return bool
      * @throws \Exception
      */
-    public function update(string $query, array $params) : bool
+    public function update(string $query, array $params, ModelRecord $record) : bool
     {
         $q = $this->db->prepare($query);
 
         if(!$q->execute($params))
             throw new \Exception('Query Failed');
+
+        $this->updateCollection($record);
 
         return true;
     }
 
+
     /**
      * @param string $query
      * @param array $params
+     * @param ModelRecord $record
      * @return int
      * @throws \Exception
      */
-    public function insert(string $query, array $params) : int
+    public function insert(string $query, array $params, ModelRecord $record) : int
     {
         $q = $this->db->prepare($query);
 
         if(!$q->execute($params))
             throw new \Exception('Query Failed');
 
-        return $this->db->lastInsertId();
+        $id = $this->db->lastInsertId();
+        $record->setId($id);
+        $this->updateCollection($record);
+
+        return $id;
     }
 
     /**
@@ -160,7 +175,17 @@ class Model
                 throw new \Exception('Requested wrong data format');
         }
 
+
         return $data;
+    }
+
+    /**
+     * updating collection after the database insert or update
+     * @param ModelRecord $entityToUpdate
+     */
+    protected function updateCollection(ModelRecord $entityToUpdate) : void
+    {
+        $this->collection[$entityToUpdate->getId()] = $entityToUpdate;
     }
 
     /**
@@ -181,9 +206,8 @@ class Model
     /**
      * @return int
      */
-    public function getFetchMode()
+    public function getFetchMode() : int
     {
         return $this->fetchMode;
     }
-
 }

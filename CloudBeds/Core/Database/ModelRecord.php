@@ -6,7 +6,7 @@
 namespace Core\Database;
 
 
-class ModelRecord
+abstract class ModelRecord
 {
     const DEFAULT_DATE_FORMAT = 'Y-m-d';
     protected $dateFormat = self::DEFAULT_DATE_FORMAT;
@@ -24,6 +24,9 @@ class ModelRecord
             $this->$setter($this->checkDate((string) $fieldValue));
         }
     }
+
+    abstract public function getId();
+    abstract public function setId(int $id);
 
     /**
      * @param string $format

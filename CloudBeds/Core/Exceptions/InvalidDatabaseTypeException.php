@@ -9,7 +9,7 @@ class InvalidDatabaseTypeException extends Exception
     public function __construct(string $message = '')
     {
         parent::__construct(
-            $message ?? 'Unknown database type'
+            !empty($message) ? $message : 'Unknown database type'
         );
     }
 

@@ -8,10 +8,9 @@
 
 namespace App\Models;
 use Core\Database\IntervalValue;
-use Core\Interfaces\ModelInterface;
 use Core\Model;
 
-class Interval extends Model implements ModelInterface
+class Interval extends Model
 {
     protected $tableName = 'intervals';
 
@@ -79,15 +78,16 @@ class Interval extends Model implements ModelInterface
 
     public function add(IntervalValue $newRecord)
     {
+
         $query = "INSERT INTO " . $this->tableName . " (start_date, end_date, price) 
                                                 VALUES (:start_date, :end_date, :price)
         ";
         $params = [
-            ':start_date' => $newRecord->getStartDate(),
-            ':end_date' => $newRecord->getEndDate(),
+            ':start_date' => $newRecord->getStartDate(IntervalValue::DEFAULT_DATE_FORMAT),
+            ':end_date' => $newRecord->getEndDate(IntervalValue::DEFAULT_DATE_FORMAT),
             ':price' => $newRecord->getPrice(),
         ];
-        $this->insert($query, $params);
+        $this->insert($query, $params, $newRecord);
     }
 
     public function edit(IntervalValue $updateRecord)
@@ -99,12 +99,14 @@ class Interval extends Model implements ModelInterface
                   WHERE id = :id            
         ";
         $params = [
-            ':start_date' => $updateRecord->getStartDate(),
-            ':end_date' => $updateRecord->getEndDate(),
+            ':start_date' => $updateRecord->getStartDate(IntervalValue::DEFAULT_DATE_FORMAT),
+            ':end_date' => $updateRecord->getEndDate(IntervalValue::DEFAULT_DATE_FORMAT),
             ':price' => $updateRecord->getPrice(),
             ':id' => $updateRecord->getId(),
         ];
-        $this->update($query, $params);
+
+        $this->update($query, $params, $updateRecord);
+
     }
 
 }
