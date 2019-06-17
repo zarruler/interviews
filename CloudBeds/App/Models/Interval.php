@@ -56,14 +56,14 @@ class Interval extends Model
             (CASE
                 WHEN :start_date >= start_date AND :end_date <= end_date THEN 1 # NEW START-END range is between existing start-end range
                 WHEN :start_date BETWEEN start_date AND end_date THEN 2         # NEW START intersect or equal existing END
-                WHEN :start_date BETWEEN start_date AND end_date+1 THEN 3       # NEW START JOINS existing END
+                WHEN DATE_SUB(:start_date, INTERVAL 1 DAY) BETWEEN start_date AND end_date THEN 3       # NEW START JOINS existing END
                 WHEN :end_date BETWEEN start_date AND end_date THEN 4           # NEW END intersect or equal existing START
-                WHEN :end_date BETWEEN start_date-1 AND end_date THEN 5         # NEW END JOINS existing START
+                WHEN DATE_ADD(:end_date, INTERVAL 1 DAY) BETWEEN start_date AND end_date THEN 5         # NEW END JOINS existing START
                 WHEN :start_date <= start_date AND :end_date >= end_date THEN 6 # NEW START-END range is wide and include already existing ranges (even few)
             END) as 'intersect'
             FROM " . $this->tableName . " 
-            WHERE (:start_date BETWEEN start_date AND end_date + 1)
-               OR (:end_date BETWEEN start_date - 1 AND end_date)
+            WHERE (DATE_SUB(:start_date, INTERVAL 1 DAY) BETWEEN start_date AND end_date)
+               OR (DATE_ADD(:end_date, INTERVAL 1 DAY) BETWEEN start_date AND end_date)
                OR (:start_date <= start_date AND :end_date >= end_date)
         ";
 

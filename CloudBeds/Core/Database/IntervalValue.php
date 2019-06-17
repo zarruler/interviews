@@ -5,29 +5,58 @@
 
 namespace Core\Database;
 
+use App\Classes\Intervals\Interfaces\IntervalActionsInterface;
 use Core\Exceptions\InvalidDateTimeFormat;
+use Core\Interfaces\IntervalPriceInterface;
 
-class IntervalValue extends ModelRecord
+class IntervalValue extends ModelRecord implements IntervalPriceInterface, IntervalActionsInterface
 {
     /**
      * @var int
      */
-    public $id;
+    private $id;
 
     /**
      * @var \DateTime
      */
-    public $start_date;
+    private $start_date;
 
     /**
      * @var \DateTime
      */
-    public $end_date;
+    private $end_date;
 
     /**
      * @var float
      */
-    public $price;
+    private $price;
+
+    /**
+     * no action until it is set
+     * available action in IntervalActionsInterface
+     * @var int
+     */
+    private $action = 0;
+
+    /**
+     * @return int
+     */
+    public function getAction(): int
+    {
+        return $this->action;
+    }
+
+    /**
+     * @param int $action
+     * @throws \Exception
+     */
+    public function setAction(int $action): void
+    {
+        if(!in_array($action, self::AVAILABLE_ACTIONS))
+            throw new \Exception('Not available action received in ' . self::class);
+
+        $this->action = $action;
+    }
 
     /**
      * @return int
