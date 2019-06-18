@@ -1,7 +1,6 @@
 <?php
 namespace App\Classes\Intervals\Interfaces;
 
-
 interface IntervalActionsInterface
 {
     const INSERT_ACTION = 1;

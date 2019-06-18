@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: jack
- * Date: 6/11/19
- * Time: 11:13 PM
- */
 
 namespace Core\Exceptions;
 

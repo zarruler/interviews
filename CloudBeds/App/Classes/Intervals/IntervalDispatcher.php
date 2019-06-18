@@ -97,58 +97,48 @@ class IntervalDispatcher implements IntervalActionsInterface, IntervalTypeInterf
         $newStart = clone $newInterval->getStartDate();
         $newEnd = clone $newInterval->getEndDate();
 
-// TODO: RECREATE THE REST OF STRATEGIES TO THE NEW WAY
         if ($readyStart <= $newStart && $readyEnd >= $newEnd)
         { // #6 readyInterval START-END range is wide and include already existing ranges ($newInterval)
-//echo '#6';
             $alg = new WideStartEnd($readyInterval, $newInterval);
             $intervals = $alg->doCalc()->getIntervals();
         }
         elseif ($readyStart < $newStart && $readyEnd >= $newStart && $readyEnd <= $newEnd)
         { // #4 readyInterval END intersect or equal existing START
-//echo '#4';
             $alg = new OuterEndStartIntersect($readyInterval, $newInterval);
             $intervals = $alg->doCalc()->getIntervals();
         }
         elseif ($readyStart->sub($oneDayInterval) == $newEnd)
         { // #3 readyInterval START JOINS existing END
-//echo '#3';
             $alg = new OuterStartNearEnd($readyInterval, $newInterval);
             $intervals = $alg->doCalc()->getIntervals();
         }
         elseif ($readyEnd > $newEnd && $readyStart <= $newEnd && $readyStart >= $newStart)
         { // #2 readyInterval START intersect or equal existing END
-//echo '#2';
             $alg = new OuterStartEndIntersect($readyInterval, $newInterval);
             $intervals = $alg->doCalc()->getIntervals();
         }
         elseif ($readyEnd->add($oneDayInterval) == $newStart)
         { // #5 readyInterval END JOINS existing START
-//echo '#5';
             $alg = new OuterEndNearStart($readyInterval, $newInterval);
             $intervals = $alg->doCalc()->getIntervals();
         }
         elseif ($readyStart == $newStart && $readyEnd == $newEnd)
         { // #1 INNER: readyInterval and existingInterval start and end dates are identical
-//echo '#1-1';
             $alg = new InnerStartEndIdentical($readyInterval, $newInterval);
             $intervals = $alg->doCalc()->getIntervals();
         }
         elseif ($readyStart == $newStart && $readyEnd < $newEnd)
         { // #1 INNER: readyInterval and existingInterval START identical but END dates different
-//echo '#1-2';
             $alg = new InnerStartIdentical($readyInterval, $newInterval);
             $intervals = $alg->doCalc()->getIntervals();
         }
         elseif ($readyEnd = $newEnd && $readyStart > $newEnd)
         { // #1 INNER: readyInterval and existingInterval END identical but START dates different
-//echo '#1-3';
             $alg = new InnerEndIdentical($readyInterval, $newInterval);
             $intervals = $alg->doCalc()->getIntervals();
         }
         elseif ($readyStart > $newStart && $readyEnd < $newEnd)
         { // #1 INNER: readyInterval somewhere between start and end of the newInterval
-//echo '#1-4';
             $alg = new BetweenStartEnd($readyInterval, $newInterval);
             $intervals = $alg->doCalc()->getIntervals();
         }

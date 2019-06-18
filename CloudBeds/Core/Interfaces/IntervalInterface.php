@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: jack
- * Date: 6/16/19
- * Time: 1:02 PM
- */
 
 namespace Core\Interfaces;
 

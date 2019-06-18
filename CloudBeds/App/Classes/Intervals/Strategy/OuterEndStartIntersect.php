@@ -33,15 +33,6 @@ class OuterEndStartIntersect extends Strategy implements StrategyPriceInterface
         $this->attachInterval(self::UPDATE_ACTION, self::NEW_INTERVAL, $this->newInterval);
         $this->attachInterval(self::DELETE_ACTION, self::READY_INTERVAL, $this->readyInterval);
 
-        // alternative joining
-        // expand readyInterval END to the END of the newInterval and keep update/insert Action as is
-        // delete new interval
-        /*
-        $this->readyInterval->setEndDate($this->newInterval->getEndDate());
-
-        $this->attachInterval($this->readyInterval->getAction(), self::READY_INTERVAL, $this->readyInterval);
-        $this->attachInterval(self::DELETE_ACTION, self::NEW_INTERVAL, $this->newInterval);
-        */
     }
 
     public function diffPriceCalc()

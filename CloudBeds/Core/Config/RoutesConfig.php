@@ -90,13 +90,6 @@ class RoutesConfig
         return $this->routes;
     }
 
-    /**
-     * @return string
-     */
-    private function getConfigFilePath(): string
-    {
-        return __DIR__ . DIRECTORY_SEPARATOR . 'routes.php';
-    }
 
     /**
      * @param string $base

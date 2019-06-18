@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: jack
- * Date: 6/4/19
- * Time: 9:53 PM
- */
 
 namespace Core;
 use Symfony\Component\HttpFoundation\{Request, Response};
@@ -15,11 +9,7 @@ class Header
     private $response;
 
     private $charset = 'UTF-8';
-    /**
-     * Header constructor.
-     * @param Request $request
-     * @param Response $response
-     */
+
     public function __construct(Request $request, Response $response)
     {
         $this->request = $request;
@@ -56,11 +46,6 @@ class Header
         return $this;
     }
 
-    /**
-     * @param string|array $content
-     * @param int $code
-     * @return $this
-     */
     public function sendCode($content = '', int $code = Response::HTTP_OK)
     {
         $this->response->setStatusCode($code);

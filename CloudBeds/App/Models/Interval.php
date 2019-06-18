@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: jack
- * Date: 6/6/19
- * Time: 3:32 AM
- */
 
 namespace App\Models;
 use Core\Database\IntervalValue;
@@ -33,7 +27,7 @@ class Interval extends Model
 
 
     /**
-     * intersect types:
+     * intersection types:
      * 1 # NEW START-END range is between existing start-end range
      * 2 # NEW START intersect or equal existing END
      * 3 # NEW START JOINS existing END

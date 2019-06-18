@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: jack
- * Date: 6/17/19
- * Time: 2:12 AM
- */
 
 namespace App\Classes\Intervals\Interfaces;
 

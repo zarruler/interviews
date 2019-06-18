@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: jack
- * Date: 6/6/19
- * Time: 2:32 AM
- */
 
 namespace Core\Database;
 
@@ -33,7 +27,6 @@ class Mysql implements DatabaseInterface
                     ';charset=' . $this->container->get('db.charset');
         $this->connection = new PDO($dsn, $this->container->get('db.user'), $this->container->get('db.password'));
 
-        // TODO: Throw an Exception when an error occurs
         $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         return $this;

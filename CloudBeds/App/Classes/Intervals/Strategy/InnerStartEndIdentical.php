@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: jack
- * Date: 6/15/19
- * Time: 6:01 PM
- */
 
 namespace App\Classes\Intervals\Strategy;
 

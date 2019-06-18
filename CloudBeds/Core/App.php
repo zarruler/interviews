@@ -12,7 +12,7 @@ class App
 
         try {
             $router->dispatchRoute();
-        } catch (ApiException $e) {
+        } catch (\Exception $e) {
             $header->sendCode($e->getMessage(), $e->getCode());
         } catch (\Throwable $e) {
             $header->sendCode($e->getMessage(), 500);

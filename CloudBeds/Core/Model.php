@@ -2,7 +2,6 @@
 
 namespace Core;
 
-use Core\Database\IntervalValue;
 use Core\Database\ModelRecord;
 use PDO;
 use Psr\Container\ContainerInterface;
@@ -59,35 +58,8 @@ abstract class Model
         }
     }
 
-    public function fetch(string $query, array $params = [])
-    {
-        $data = [];
-        $q = $this->db->prepare($query);
-        if(!$q->execute($params))
-            throw new \Exception('Query Failed');
-        if($q->rowCount() == 1) {
-            $data[0] = $q->fetch(PDO::FETCH_ASSOC);
-            $this->fillCollection($data);
-        }
-
-        return $this;
-    }
-
-
-    public function fetchAll(string $query, array $params = [])
-    {
-        $q = $this->db->prepare($query);
-        if(!$q->execute($params))
-            throw new \Exception('Query Failed');
-        if($q->rowCount() > 0) {
-            $data = $q->fetchAll(PDO::FETCH_ASSOC);
-            $this->fillCollection($data);
-        }
-
-        return $this;
-    }
-
     /**
+     * filling model collection with the result objects
      *
      * @param array $data
      * @throws \ReflectionException
@@ -102,6 +74,51 @@ abstract class Model
 
 
     /**
+     * fetch One record
+     *
+     * @param string $query
+     * @param array $params
+     * @return $this
+     * @throws \ReflectionException
+     */
+    public function fetch(string $query, array $params = [])
+    {
+        $data = [];
+        $q = $this->db->prepare($query);
+        if(!$q->execute($params))
+            throw new \Exception('Query Failed');
+        if($q->rowCount() == 1) {
+            $data[0] = $q->fetch(PDO::FETCH_ASSOC);
+            $this->fillCollection($data);
+        }
+
+        return $this;
+    }
+
+    /**
+     * fetch All records
+     *
+     * @param string $query
+     * @param array $params
+     * @return $this
+     * @throws \ReflectionException
+     */
+    public function fetchAll(string $query, array $params = [])
+    {
+        $q = $this->db->prepare($query);
+        if(!$q->execute($params))
+            throw new \Exception('Query Failed');
+        if($q->rowCount() > 0) {
+            $data = $q->fetchAll(PDO::FETCH_ASSOC);
+            $this->fillCollection($data);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Updating record
+     *
      * @param string $query
      * @param array $params
      * @param ModelRecord $record
@@ -122,6 +139,8 @@ abstract class Model
 
 
     /**
+     * Inserting Record
+     *
      * @param string $query
      * @param array $params
      * @param ModelRecord $record
@@ -143,6 +162,8 @@ abstract class Model
     }
 
     /**
+     * Deleting Record
+     *
      * @param string $query
      * @param array $ids in format [1,2,5,7..xxx]
      * @return int
@@ -160,6 +181,31 @@ abstract class Model
             $this->cleanCollection($ids);
 
         return $rowsAffected;
+    }
+
+
+    /**
+     * start transaction
+     */
+    public function beginTransaction()
+    {
+        $this->db->beginTransaction();
+    }
+
+    /**
+     * commit transaction
+     */
+    public function commit()
+    {
+        $this->db->commit();
+    }
+
+    /**
+     * rollback transaction
+     */
+    public function rollBack()
+    {
+        $this->db->rollBack();
     }
 
     /**
@@ -219,6 +265,8 @@ abstract class Model
     }
 
     /**
+     * setting format of data to receive objects or arrays
+     *
      * @param int $fetchMode
      * @return $this
      * @throws \Exception

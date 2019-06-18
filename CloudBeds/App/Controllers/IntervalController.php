@@ -70,9 +70,9 @@ class IntervalController extends Controller implements IntervalActionsInterface
 
         $validator = (new ValidatorFactory())->make($fields, [
             'start_date' => 'required|date',
-            'end_date'   => 'required|date|after:start_date',
+            'end_date'   => 'required|date|after_or_equal:start_date',
             'price'      => 'required|numeric|min:0.01'
-        ] );
+        ]);
 
         if ($validator->fails()) {
             return $header->sendCode(['status'=>'error',
@@ -84,8 +84,6 @@ class IntervalController extends Controller implements IntervalActionsInterface
          */
         $intervalModel = $this->getModel('Interval');
         $data = $intervalModel->getIntervals($startDate, $endDate);
-//var_dump($data);
-//die;
 
         $newInterval = new IntervalValue([
             'id' => 0,
@@ -93,8 +91,7 @@ class IntervalController extends Controller implements IntervalActionsInterface
             'end_date' => $endDate,
             'price' => $price
         ]);
-//var_dump($newInterval);
-//die;
+
         $dispatcher = new IntervalDispatcher($newInterval);
 
         foreach ($data as $id => $dbInterval) {
@@ -103,21 +100,39 @@ class IntervalController extends Controller implements IntervalActionsInterface
 
         $intervals = $dispatcher->getIntervals();
 
-        foreach ($intervals as $intervalObj)
-        {
-            switch ($intervalObj->getAction()){
-                case self::INSERT_ACTION :
-                    $intervalModel->add($intervalObj);
-                    break;
-                case self::DELETE_ACTION :
-                    $intervalModel->delete([$intervalObj]);
-                    break;
-                case self::UPDATE_ACTION :
-                    $intervalModel->edit($intervalObj);
-                    break;
-            }
-        }
+        try {
+            $intervalModel->beginTransaction();
 
-        $this->getAll();
+            foreach ($intervals as $intervalObj) {
+                switch ($intervalObj->getAction()) {
+                    case self::INSERT_ACTION :
+                        $intervalModel->add($intervalObj);
+                        break;
+                    case self::DELETE_ACTION :
+                        $intervalModel->delete([$intervalObj]);
+                        break;
+                    case self::UPDATE_ACTION :
+                        $intervalModel->edit($intervalObj);
+                        break;
+                }
+            }
+            $intervalModel->commit();
+
+            $this->getAll();
+
+        } catch (\Exception $e){
+
+            //Rollback the transaction.
+            $intervalModel->rollBack();
+
+            $header = $this->container->get(Header::class);
+
+            $data = [
+                'status' => 'error',
+                'data' => $e->getMessage(),
+            ];
+            $header->sendCode($data, Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+        return true;
     }
 }

@@ -44,28 +44,4 @@ class InnerEndIdentical extends Strategy implements StrategyPriceInterface
         $this->attachInterval(self::UPDATE_ACTION, self::NEW_INTERVAL, $this->newInterval);
 
     }
-
-    /**
-     * @return Model
-     */
-    public function getModel(): Model
-    {
-        return $this->model;
-    }
-
-    /**
-     * @return IntervalPriceInterface
-     */
-    public function getDbInterval(): IntervalPriceInterface
-    {
-        return $this->dbInterval;
-    }
-
-    /**
-     * @return IntervalPriceInterface
-     */
-    public function getNewInterval(): IntervalPriceInterface
-    {
-        return $this->newInterval;
-    }
 }
