@@ -11,8 +11,8 @@ INSERT INTO `intervals` (`id`, `price`, `start_date`, `end_date`) VALUES
 
 ALTER TABLE `intervals`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `start_date` (`start_date`),
-  ADD UNIQUE KEY `end_date` (`end_date`);
+  ADD KEY `start_date` (`start_date`),
+  ADD KEY `end_date` (`end_date`);
 
 ALTER TABLE `intervals`
   MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
