@@ -2,70 +2,46 @@
 
 namespace App\Classes\Intervals\Strategy;
 
-use App\Classes\Intervals\StrategyPriceInterface;
-use Core\Interfaces\IntervalPriceInterface;
-use Core\Model;
+use App\Classes\Intervals\Interfaces\StrategyPriceInterface;
 
 /**
- * NEW END JOINS existing START
+ * readyInterval END JOINS existing START
  *
  * Class OuterEndNearStart
  * @package App\Classes\Intervals\Strategy
  */
-class OuterEndNearStart implements StrategyPriceInterface
+class OuterEndNearStart extends Strategy implements StrategyPriceInterface
 {
-    private $model;
-    private $dbInterval;
-    private $newInterval;
-
-    public function __construct(Model $model, IntervalPriceInterface $dbInterval, IntervalPriceInterface $newInterval)
-    {
-        $this->model = $model;
-        $this->dbInterval = $dbInterval;
-        $this->newInterval = $newInterval;
-    }
-
     public function doCalc()
     {
-        if ($this->dbInterval->getPrice() == $this->newInterval->getPrice()) {
+        if ($this->newInterval->getPrice() == $this->readyInterval->getPrice()) {
             $this->samePriceCalc();
         } else {
             $this->diffPriceCalc();
         }
+        return $this;
     }
 
     public function samePriceCalc()
     {
-        // expanding existing range. existing START update with the new START
-        $this->dbInterval->setStartDate($this->newInterval->getStartDate());
-        $this->model->edit($this->dbInterval);
+        // expanding newInterval range.
+        // update newInterval START with the readyInterval START
+        // delete readyInterval
+        $this->newInterval->setStartDate($this->readyInterval->getStartDate());
+
+        $this->attachInterval(self::UPDATE_ACTION, self::NEW_INTERVAL, $this->newInterval);
+        $this->attachInterval(self::DELETE_ACTION, self::READY_INTERVAL, $this->readyInterval);
+
     }
 
     public function diffPriceCalc()
     {
-        $this->model->add($this->newInterval);
-    }
-    /**
-     * @return Model
-     */
-    public function getModel(): Model
-    {
-        return $this->model;
-    }
+        // readyInterval keep as is
+        // newInterval keep existing action or do nothing action(just register in dispatcher)
+        $newIntervalAction = $this->newInterval->getAction();
+        $newIntervalAction = ($newIntervalAction > 0) ? $newIntervalAction : self::NOTHING_ACTION;
 
-    /**
-     * @return IntervalPriceInterface
-     */
-    public function getDbInterval(): IntervalPriceInterface
-    {
-        return $this->dbInterval;
-    }
-
-    /**
-     * @return IntervalPriceInterface
-     */
-    public function getNewInterval(): IntervalPriceInterface
-    {
-        return $this->newInterval;
+        $this->attachInterval($newIntervalAction, self::NEW_INTERVAL, $this->newInterval);
+        $this->attachInterval($this->readyInterval->getAction(), self::READY_INTERVAL, $this->readyInterval);
     }
 }

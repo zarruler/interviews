@@ -48,19 +48,8 @@ class Interval extends Model
      */
     public function getIntervals($startDate, $endDate)
     {
-        /*
-        * Todo: Clean query from the comments
-        */
         $query = "
-            SELECT *, 
-            (CASE
-                WHEN :start_date >= start_date AND :end_date <= end_date THEN 1 # NEW START-END range is between existing start-end range
-                WHEN :start_date BETWEEN start_date AND end_date THEN 2         # NEW START intersect or equal existing END
-                WHEN DATE_SUB(:start_date, INTERVAL 1 DAY) BETWEEN start_date AND end_date THEN 3       # NEW START JOINS existing END
-                WHEN :end_date BETWEEN start_date AND end_date THEN 4           # NEW END intersect or equal existing START
-                WHEN DATE_ADD(:end_date, INTERVAL 1 DAY) BETWEEN start_date AND end_date THEN 5         # NEW END JOINS existing START
-                WHEN :start_date <= start_date AND :end_date >= end_date THEN 6 # NEW START-END range is wide and include already existing ranges (even few)
-            END) as 'intersect'
+            SELECT *
             FROM " . $this->tableName . " 
             WHERE (DATE_SUB(:start_date, INTERVAL 1 DAY) BETWEEN start_date AND end_date)
                OR (DATE_ADD(:end_date, INTERVAL 1 DAY) BETWEEN start_date AND end_date)
@@ -72,7 +61,7 @@ class Interval extends Model
             ':end_date' => $endDate,
         ];
         $data = $this->fetchAll($query, $params)->get();
-//var_dump($data);
+
         return $data;
     }
 

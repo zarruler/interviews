@@ -5,11 +5,10 @@
 
 namespace Core\Database;
 
-use App\Classes\Intervals\Interfaces\IntervalActionsInterface;
 use Core\Exceptions\InvalidDateTimeFormat;
 use Core\Interfaces\IntervalPriceInterface;
 
-class IntervalValue extends ModelRecord implements IntervalPriceInterface, IntervalActionsInterface
+class IntervalValue extends ModelRecord implements IntervalPriceInterface
 {
     /**
      * @var int
@@ -63,7 +62,7 @@ class IntervalValue extends ModelRecord implements IntervalPriceInterface, Inter
      */
     public function getId(): int
     {
-        return $this->id;
+        return $this->id ?? 0;
     }
 
     /**

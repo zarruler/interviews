@@ -1,26 +1,16 @@
 <?php
 namespace App\Controllers;
 
+use App\Classes\Intervals\Interfaces\IntervalActionsInterface;
 use App\Classes\Intervals\IntervalDispatcher;
-use App\Classes\Intervals\Strategy\BetweenStartEnd;
-use App\Classes\Intervals\Strategy\InnerEndIdentical;
-use App\Classes\Intervals\Strategy\InnerStartEndIdentical;
-use App\Classes\Intervals\Strategy\InnerStartIdentical;
-use App\Classes\Intervals\Strategy\NoIntersections;
-use App\Classes\Intervals\Strategy\OuterEndNearStart;
-use App\Classes\Intervals\Strategy\OuterEndStartIntersect;
-use App\Classes\Intervals\Strategy\OuterStartEndIntersect;
-use App\Classes\Intervals\Strategy\OuterStartNearEnd;
-use App\Classes\Intervals\Strategy\WideStartEnd;
 use App\Models\Interval;
 use Core\Config\ValidatorFactory;
 use Core\Controller;
 use Core\Database\IntervalValue;
-use Core\Database\ModelRecord;
 use Core\Header;
 use Symfony\Component\HttpFoundation\Response;
 
-class IntervalController extends Controller
+class IntervalController extends Controller implements IntervalActionsInterface
 {
     public function index()
     {
@@ -98,6 +88,7 @@ class IntervalController extends Controller
 //die;
 
         $newInterval = new IntervalValue([
+            'id' => 0,
             'start_date' => $startDate,
             'end_date' => $endDate,
             'price' => $price
@@ -112,86 +103,21 @@ class IntervalController extends Controller
 
         $intervals = $dispatcher->getIntervals();
 
-var_dump($intervals);
-        // TODO: loop through $intervals and insert/delete/update according to the $interval->getAction()
-
-/*
-
-        // TODO: refactor this hell to the command, strategy and chain of responsibility :)
-        switch (count($data)) {
-            case 0: // simple insert, no intersections
-                $alg = new NoIntersections($intervalModel, $newInterval);
-                $alg->doCalc();
-                break;
-            case 1: // left or right intersection OR inclusion
-                reset($data);
-                $dbInterval = current($data);
-
-                if ($dbInterval->getIntersect() == 1) {
-                    // 1 # NEW START-END range is between existing start-end range or identical
-
-                    // checking if both start and end dates are identical then required to
-                    // update existing interval with the new data from the new interval (in our case update price)
-                    if($newInterval->getStartDate() == $dbInterval->getStartDate() && $newInterval->getEndDate() == $dbInterval->getEndDate()) {
-
-                        $alg = new InnerStartEndIdentical($intervalModel, $dbInterval, $newInterval);
-                        $alg->doCalc();
-
-                    } // if start dates identical then adding new interval and updating existing interval start date
-                      // with the new interval end date
-                    elseif ($newInterval->getStartDate() == $dbInterval->getStartDate()) {
-
-                        $alg = new InnerStartIdentical($intervalModel, $dbInterval, $newInterval);
-                        $alg->doCalc();
-
-                    } // if END dates identical then adding new interval and updating existing interval END date
-                      // with the new interval start date
-                    elseif ($newInterval->getEndDate() == $dbInterval->getEndDate()) {
-
-                        $alg = new InnerEndIdentical($intervalModel, $dbInterval, $newInterval);
-                        $alg->doCalc();
-
-                    } // new interval somewhere between start and end of the existing interval
-                      // in this case we have 2 new intervals to add and one existing to modify
-                    else {
-                        $alg = new BetweenStartEnd($intervalModel, $dbInterval, $newInterval);
-                        $alg->doCalc();
-
-                    }
-                } elseif ($dbInterval->getIntersect() == 2) { // 2 # NEW START intersect or equal existing END
-                    $alg = new OuterStartEndIntersect($intervalModel, $dbInterval, $newInterval);
-                    $alg->doCalc();
-                } elseif ($dbInterval->getIntersect() == 3) { // 3 # NEW START JOINS existing END
-                    $alg = new OuterStartNearEnd($intervalModel, $dbInterval, $newInterval);
-                    $alg->doCalc();
-                } elseif ($dbInterval->getIntersect() == 4) { // 4 # NEW END intersect or equal existing START
-                    $alg = new OuterEndStartIntersect($intervalModel, $dbInterval, $newInterval);
-                    $alg->doCalc();
-                } elseif ($dbInterval->getIntersect() == 5) { // 5 # NEW END JOINS existing START
-                    $alg = new OuterEndNearStart($intervalModel, $dbInterval, $newInterval);
-                    $alg->doCalc();
-                } elseif ($dbInterval->getIntersect() == 6) { // 6 # NEW START-END range is wide and include already existing ranges (even few)
-                    // delete all existing intervals and insert NEW interval
-                    $alg = new WideStartEnd($intervalModel, $newInterval);
-                    $alg->doCalc();
-                }
-                break;
-            case 2: // both sides intersection
-
-                break;
-            default: // NEW range is wide and include one or more existing ranges
-                // delete all existing intervals and insert NEW interval
-                $alg = new WideStartEnd($intervalModel, $newInterval);
-                $alg->doCalc();
-
+        foreach ($intervals as $intervalObj)
+        {
+            switch ($intervalObj->getAction()){
+                case self::INSERT_ACTION :
+                    $intervalModel->add($intervalObj);
+                    break;
+                case self::DELETE_ACTION :
+                    $intervalModel->delete([$intervalObj]);
+                    break;
+                case self::UPDATE_ACTION :
+                    $intervalModel->edit($intervalObj);
+                    break;
+            }
         }
-*/
-        /*
-        $data = [
-            'status' => 'ok',
-            'data' => $data,
-        ];
-        $header->send($data);
-*/
+
+        $this->getAll();
     }
 }

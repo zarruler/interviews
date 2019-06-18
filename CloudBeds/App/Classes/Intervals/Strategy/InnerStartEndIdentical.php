@@ -9,9 +9,7 @@
 namespace App\Classes\Intervals\Strategy;
 
 
-use App\Classes\Intervals\StrategyPriceInterface;
-use Core\Interfaces\IntervalPriceInterface;
-use Core\Model;
+use App\Classes\Intervals\Interfaces\StrategyPriceInterface;
 
 /**
  * checking if both start and end dates are identical then
@@ -20,59 +18,34 @@ use Core\Model;
  * Class InnerStartEndIdentical
  * @package App\Classes\Intervals\Strategy
  */
-class InnerStartEndIdentical implements StrategyPriceInterface
+class InnerStartEndIdentical extends Strategy implements StrategyPriceInterface
 {
-    private $model;
-    private $dbInterval;
-    private $newInterval;
-
-    public function __construct(Model $model, IntervalPriceInterface $dbInterval, IntervalPriceInterface $newInterval)
-    {
-        $this->model = $model;
-        $this->dbInterval = $dbInterval;
-        $this->newInterval = $newInterval;
-    }
-
     public function doCalc()
     {
-        if ($this->dbInterval->getPrice() == $this->newInterval->getPrice()) {
+        if ($this->newInterval->getPrice() == $this->readyInterval->getPrice()) {
             $this->samePriceCalc();
         } else {
             $this->diffPriceCalc();
         }
+        return $this;
     }
 
     public function samePriceCalc()
     {
+        // no changes
+        // registering newInterval and mark it to delete
+        // readyInterval stays as is without changes
+        $this->attachInterval(self::DELETE_ACTION, self::NEW_INTERVAL, $this->newInterval);
+        $this->attachInterval($this->readyInterval->getAction(), self::READY_INTERVAL, $this->readyInterval);
 
     }
 
     public function diffPriceCalc()
     {
-        $this->dbInterval->setPrice($this->newInterval->getPrice());
-        $this->model->edit($this->dbInterval);
-    }
-    /**
-     * @return Model
-     */
-    public function getModel(): Model
-    {
-        return $this->model;
+        // newInterval delete
+        // readyInterval has priority over existing so keep it price and it stays without changes
+        $this->attachInterval(self::DELETE_ACTION, self::NEW_INTERVAL, $this->newInterval);
+        $this->attachInterval($this->readyInterval->getAction(), self::READY_INTERVAL, $this->readyInterval);
     }
 
-    /**
-     * @return IntervalPriceInterface
-     */
-    public function getDbInterval(): IntervalPriceInterface
-    {
-        return $this->dbInterval;
-    }
-
-    /**
-     * @return IntervalPriceInterface
-     */
-    public function getNewInterval(): IntervalPriceInterface
-    {
-        return $this->newInterval;
-    }
 }

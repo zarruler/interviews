@@ -2,53 +2,46 @@
 
 namespace App\Classes\Intervals\Strategy;
 
-
-use App\Classes\Intervals\StrategyPriceInterface;
-use Core\Interfaces\IntervalPriceInterface;
-use Core\Model;
+use App\Classes\Intervals\Interfaces\StrategyPriceInterface;
 
 /**
- * if END dates identical then
- * adding new interval and
- * updating existing interval END date with the new interval start date
+ * END dates identical and different INNER START dates
  *
  * Class InnerEndIdentical
  * @package App\Classes\Intervals\Strategy
  */
-class InnerEndIdentical implements StrategyPriceInterface
+class InnerEndIdentical extends Strategy implements StrategyPriceInterface
 {
-    private $model;
-    private $dbInterval;
-    private $newInterval;
-
-    public function __construct(Model $model, IntervalPriceInterface $dbInterval, IntervalPriceInterface $newInterval)
-    {
-        $this->model = $model;
-        $this->dbInterval = $dbInterval;
-        $this->newInterval = $newInterval;
-    }
-
     public function doCalc()
     {
-        if ($this->dbInterval->getPrice() == $this->newInterval->getPrice()) {
+        if ($this->newInterval->getPrice() == $this->readyInterval->getPrice()) {
             $this->samePriceCalc();
         } else {
             $this->diffPriceCalc();
         }
+        return $this;
     }
 
     public function samePriceCalc()
     {
-
+        // no changes to the existing
+        // registering newInterval and mark it to do nothing with it at this step
+        // readyInterval delete - it is smaller than existing newInterval
+        $this->attachInterval(self::NOTHING_ACTION, self::NEW_INTERVAL, $this->newInterval);
+        $this->attachInterval(self::DELETE_ACTION, self::READY_INTERVAL, $this->readyInterval);
     }
 
     public function diffPriceCalc()
     {
-        $this->model->add($this->newInterval);
+        // keep readyInterval unchanged
+        // update newInterval END date to the readyInterval START_date-1
 
-        $updEndDate = $this->newInterval->getStartDate()->sub(new \DateInterval('P1D'));
-        $this->dbInterval->setEndDate($updEndDate);
-        $this->model->edit($this->dbInterval);
+        $updEndDate = clone $this->readyInterval->getStartDate();
+        $updEndDate->sub(new \DateInterval('P1D'));
+        $this->newInterval->setEndDate($updEndDate);
+
+        $this->attachInterval($this->readyInterval->getAction(), self::READY_INTERVAL, $this->readyInterval);
+        $this->attachInterval(self::UPDATE_ACTION, self::NEW_INTERVAL, $this->newInterval);
 
     }
 

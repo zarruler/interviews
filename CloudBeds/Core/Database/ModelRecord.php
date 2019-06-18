@@ -6,12 +6,19 @@
 namespace Core\Database;
 
 
-abstract class ModelRecord
+use App\Classes\Intervals\Interfaces\IntervalActionsInterface;
+
+abstract class ModelRecord implements IntervalActionsInterface
 {
     const DEFAULT_DATE_FORMAT = 'Y-m-d';
     protected $dateFormat = self::DEFAULT_DATE_FORMAT;
 
     protected $modelFieldsList = array();
+
+    /**
+     * @var string unique ID for the object
+     */
+    protected $uid;
 
     public function __construct(array $data)
     {
@@ -23,10 +30,25 @@ abstract class ModelRecord
             $setter = $this->getSetterByFieldName($fieldName);
             $this->$setter($this->checkDate((string) $fieldValue));
         }
+
+        $this->setUid();
     }
 
     abstract public function getId();
     abstract public function setId(int $id);
+
+    /**
+     * @return mixed
+     */
+    public function getUid()
+    {
+        return $this->uid;
+    }
+
+    private function setUid(): void
+    {
+        $this->uid = substr(md5(uniqid(mt_rand(), true)), 0, 6);
+    }
 
     /**
      * @param string $format

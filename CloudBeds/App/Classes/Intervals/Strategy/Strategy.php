@@ -34,7 +34,8 @@ class Strategy implements IntervalActionsInterface, IntervalTypeInterface
             throw new \Exception('Wrong Interval type in '. self::class);
 
         $interval->setAction($action);
-        $this->intervalActions[$intervalType] = $interval;
+        //as a result of algorithm could be many new intervals
+        $this->intervalActions[][$intervalType] = $interval;
     }
 
     public function getIntervals()

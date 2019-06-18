@@ -2,11 +2,9 @@
 
 namespace App\Classes\Intervals\Strategy;
 
-
-use App\Classes\Intervals\StrategyPriceInterface;
+use App\Classes\Intervals\Interfaces\StrategyPriceInterface;
 use Core\Database\IntervalValue;
-use Core\Interfaces\IntervalPriceInterface;
-use Core\Model;
+use Core\Database\ModelRecord;
 
 /**
  * new interval somewhere between start and end of the existing interval
@@ -15,75 +13,50 @@ use Core\Model;
  * Class BetweenStartEnd
  * @package App\Classes\Intervals\Strategy
  */
-class BetweenStartEnd implements StrategyPriceInterface
+class BetweenStartEnd extends Strategy implements StrategyPriceInterface
 {
-    private $model;
-    private $dbInterval;
-    private $newInterval;
-
-    public function __construct(Model $model, IntervalPriceInterface $dbInterval, IntervalPriceInterface $newInterval)
-    {
-        $this->model = $model;
-        $this->dbInterval = $dbInterval;
-        $this->newInterval = $newInterval;
-    }
-
     public function doCalc()
     {
-        if ($this->dbInterval->getPrice() == $this->newInterval->getPrice()) {
+        if ($this->newInterval->getPrice() == $this->readyInterval->getPrice()) {
             $this->samePriceCalc();
         } else {
             $this->diffPriceCalc();
         }
+        return $this;
     }
 
     public function samePriceCalc()
     {
-
+        // no changes to the existing
+        // registering newInterval and mark it to do nothing with it at this step
+        // readyInterval delete - it is smaller than existing newInterval
+        $this->attachInterval(self::NOTHING_ACTION, self::NEW_INTERVAL, $this->newInterval);
+        $this->attachInterval(self::DELETE_ACTION, self::READY_INTERVAL, $this->readyInterval);
     }
 
     public function diffPriceCalc()
     {
-        // ORDER IS IMPORTANT !!!
-        // firstly adding new interval
-        $this->model->add($this->newInterval);
+        // keep readyInterval as is
+        $this->attachInterval($this->readyInterval->getAction(), self::READY_INTERVAL, $this->readyInterval);
 
-        // then creating another new interval based on first new interval END_date+1 as start date and
-        // existing interval END date as end date
-        $updStartDate = $this->newInterval->getEndDate()->add(new \DateInterval('P1D'));
-        $secondNewInterval = new IntervalValue([
-            'start_date' => $updStartDate,
-            'end_date' => $this->dbInterval->getEndDate(),
-            'price' => $this->dbInterval->getPrice()
+        // creating brand new interval with the newInterval START and readyInterval START_date-1 as END date
+        $brandNewEndDate = clone $this->readyInterval->getStartDate();
+        $brandNewEndDate->sub(new \DateInterval('P1D'));
+
+        $brandNewInterval = new IntervalValue([
+            'start_date' => $this->newInterval->getStartDate(ModelRecord::DEFAULT_DATE_FORMAT),
+            'end_date' => $brandNewEndDate->format(ModelRecord::DEFAULT_DATE_FORMAT),
+            'price' => $this->newInterval->getPrice()
         ]);
-        $this->model->add($secondNewInterval);
+        $this->attachInterval(self::INSERT_ACTION, self::NEW_INTERVAL, $brandNewInterval);
 
-        // updating existing interval
-        $updEndDate = $this->newInterval->getStartDate()->sub(new \DateInterval('P1D'));
-        $this->dbInterval->setEndDate($updEndDate);
-        $this->model->edit($this->dbInterval);
-    }
-    /**
-     * @return Model
-     */
-    public function getModel(): Model
-    {
-        return $this->model;
-    }
 
-    /**
-     * @return IntervalPriceInterface
-     */
-    public function getDbInterval(): IntervalPriceInterface
-    {
-        return $this->dbInterval;
-    }
+        // updating newInterval START date with the readyInterval END_date+1
+        $updStartDate = clone $this->readyInterval->getEndDate();
+        $updStartDate->add(new \DateInterval('P1D'));
+        $this->newInterval->setStartDate($updStartDate);
 
-    /**
-     * @return IntervalPriceInterface
-     */
-    public function getNewInterval(): IntervalPriceInterface
-    {
-        return $this->newInterval;
+        $this->attachInterval(self::UPDATE_ACTION, self::NEW_INTERVAL, $this->newInterval);
+
     }
 }
