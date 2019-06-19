@@ -31,6 +31,11 @@ execute `dump.sql`
       - `Models` - self explanatory
       - `Views` - self explanatory
       - `Classes\Intervals` - files with the algorithm
+
+#### What is not done
+1) tests not written :(
+2) not uploaded to some hosting i dont have smth normal but free have different limits strange settings etc.
+you can easily test it by running docker as explained above. 
       
 #### How to use
 * click some buttons on the web frontend 
