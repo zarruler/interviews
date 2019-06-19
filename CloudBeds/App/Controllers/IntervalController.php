@@ -7,6 +7,7 @@ use App\Models\Interval;
 use Core\Config\ValidatorFactory;
 use Core\Controller;
 use Core\Database\IntervalValue;
+use Core\Database\ModelRecord;
 use Core\Header;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -54,6 +55,20 @@ class IntervalController extends Controller implements IntervalActionsInterface
 
     }
 
+    public function deleteAll()
+    {
+        $header = $this->container->get(Header::class);
+        $interval = $this->getModel('Interval');
+
+        $interval->deleteAll();
+
+        $data = [
+            'status' => 'ok',
+            'data' => [],
+        ];
+        $header->send($data);
+        return true;
+    }
 
     public function add()
     {
@@ -87,8 +102,8 @@ class IntervalController extends Controller implements IntervalActionsInterface
 
         $newInterval = new IntervalValue([
             'id' => 0,
-            'start_date' => $startDate,
-            'end_date' => $endDate,
+            'start_date' => (new \DateTime($startDate))->format(ModelRecord::DEFAULT_DATE_FORMAT),
+            'end_date' => (new \DateTime($endDate))->format(ModelRecord::DEFAULT_DATE_FORMAT),
             'price' => $price
         ]);
 

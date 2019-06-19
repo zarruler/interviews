@@ -169,7 +169,7 @@ abstract class Model
      * @return int
      * @throws \Exception
      */
-    public function del(string $query, array $ids) : int
+    public function del(string $query, array $ids = []) : int
     {
         $q = $this->db->prepare($query);
 
@@ -234,7 +234,7 @@ abstract class Model
             break;
             case self::FETCH_ARR:
                 foreach($this->collection as $key => $dataObj) {
-                    $data[$key] = $dataObj->toArray();
+                    $data[] = $dataObj->toArray();
                 }
             break;
             default:

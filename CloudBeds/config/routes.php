@@ -25,6 +25,12 @@ return [
                     RouteConfigKeys::CONTROLLER => App\Controllers\IntervalController::class,
                     RouteConfigKeys::CONTROLLER_ACTION => 'add'
                 ],
+                [
+                    RouteConfigKeys::ROUTE => '/interval/deleteall',
+                    RouteConfigKeys::HTTP_METHOD => 'GET',
+                    RouteConfigKeys::CONTROLLER => App\Controllers\IntervalController::class,
+                    RouteConfigKeys::CONTROLLER_ACTION => 'deleteAll'
+                ],
             ]
         ],
         [

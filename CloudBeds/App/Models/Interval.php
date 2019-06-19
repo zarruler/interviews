@@ -10,7 +10,10 @@ class Interval extends Model
 
     public function getAll(int $fetchStyle = Model::FETCH_OBJ)
     {
-        $query = "SELECT * FROM " . $this->tableName;
+        $query = "SELECT * 
+                  FROM " . $this->tableName . "
+                  ORDER BY start_date ASC
+        ";
         $data = $this->fetchAll($query)->get($fetchStyle);
         return $data;
     }
@@ -22,7 +25,7 @@ class Interval extends Model
             ':id' => $id
         ];
         $data = $this->fetch($query, $params)->get($fetchStyle);
-        return $data[0];
+        return $data;
     }
 
 
@@ -120,6 +123,14 @@ class Interval extends Model
             return $rowsAffected;
        }
 
+        return $rowsAffected;
+    }
+
+    public function deleteAll() : int
+    {
+        $query = "DELETE FROM " . $this->tableName ;
+
+        $rowsAffected = $this->del($query);
         return $rowsAffected;
     }
 }
