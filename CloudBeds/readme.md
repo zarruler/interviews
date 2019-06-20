@@ -34,8 +34,7 @@ execute `dump.sql`
 
 #### What is not done
 1) tests not written :(
-2) not uploaded to some hosting i dont have smth normal but free have different limits strange settings etc.
-you can easily test it by running docker as explained above. 
+  
 
 #### Notes
 1) in the task description was mentioned to use less possible queries.   
@@ -49,7 +48,8 @@ in case of unions and other possible queries BUT
 
     so i decided to use just INDEX/KEY instead of UNIQUE - it is more kind of "safe".   
     about the performance priority said nothing in the task  
-    
+3) html design - not my area of expertise so i've asked a friend to create html mockup only  
+(javascript, templating and related changes are mine)    
 #### How to use
 * click some buttons on the web frontend http://seugenev.dhostingsites.com/
 * use some handy tools like Restlet client to use as API manually        
