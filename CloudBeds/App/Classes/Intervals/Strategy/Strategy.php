@@ -11,13 +11,16 @@ class Strategy implements IntervalActionsInterface, IntervalTypeInterface
 {
     protected $newInterval;
     protected $readyInterval;
-
+    protected $debug = 0;
     private $intervalActions;
 
     public function __construct(IntervalPriceInterface $readyInterval, IntervalPriceInterface $newInterval)
     {
         $this->readyInterval = clone $readyInterval;
         $this->newInterval = clone $newInterval;
+
+        if($this->debug)
+            $this->debug();
     }
 
     protected function attachInterval(int $action, int $intervalType, IntervalPriceInterface $interval)
@@ -37,4 +40,8 @@ class Strategy implements IntervalActionsInterface, IntervalTypeInterface
         return $this->intervalActions;
     }
 
+    private function debug()
+    {
+        echo 'Strategy: ' . get_class($this) . "\n";
+    }
 }

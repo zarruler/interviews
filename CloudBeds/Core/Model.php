@@ -66,9 +66,10 @@ abstract class Model
      */
     protected function fillCollection(array $data) : void
     {
+        $this->collection = [];
         $recordValueObj = self::DB_NAMESPACE . ((new \ReflectionClass($this))->getShortName()) . 'Value';
         foreach($data as $key => $dataArr) {
-            $this->collection[$dataArr['id']] = new $recordValueObj($dataArr);
+            $this->collection[] = new $recordValueObj($dataArr);
         }
     }
 
@@ -251,7 +252,9 @@ abstract class Model
      */
     protected function updateCollection(ModelRecord $entityToUpdate) : void
     {
-        $this->collection[$entityToUpdate->getId()] = $entityToUpdate;
+        foreach ($this->collection as $key => $entity)
+            if ($entity->getId() == $entityToUpdate->getId())
+                $this->collection[$key] = $entityToUpdate;
     }
 
     /**
@@ -261,7 +264,9 @@ abstract class Model
      */
     protected function cleanCollection(array $ids) : void
     {
-        $this->collection = array_diff_key($this->collection, array_combine(array_values($ids), array_values($ids)));
+        foreach ($this->collection as $key => $entity)
+            if(in_array($entity->getId(), $ids))
+                unset($this->collection[$key]);
     }
 
     /**

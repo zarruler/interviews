@@ -1,7 +1,7 @@
 <?php
 
 namespace Core;
-use Core\Interfaces\ModelInterface;
+
 use Psr\Container\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Twig\Environment as Twig;

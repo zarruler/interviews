@@ -156,7 +156,7 @@ class Interval extends Model
 
     public function deleteAll() : int
     {
-        $query = "DELETE FROM " . $this->tableName ;
+        $query = "TRUNCATE TABLE " . $this->tableName ;
 
         $rowsAffected = $this->del($query);
         return $rowsAffected;

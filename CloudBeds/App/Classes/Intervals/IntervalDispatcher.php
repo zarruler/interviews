@@ -19,7 +19,7 @@ use Core\Interfaces\IntervalPriceInterface;
  * ready intervals - based on calculations of the user input new interval (from constructor)
  * newly incoming intervals - are intersected intervals from the database
  *
- * ready intervals have higher priority over newly incoming intervals
+ * ready intervals have higher priority over newly incoming intervals coz they are based on the user input
  *
  * Class IntervalDispatcher
  * @package App\Classes\Intervals
@@ -112,10 +112,10 @@ class IntervalDispatcher implements IntervalActionsInterface, IntervalTypeInterf
         $intervals = []; // if empty returned then appropriate strategy wasn't found
         $oneDayInterval = new \DateInterval('P1D');
 
-        $readyStart = clone $readyInterval->getStartDate();
-        $readyEnd = clone $readyInterval->getEndDate();
-        $newStart = clone $newInterval->getStartDate();
-        $newEnd = clone $newInterval->getEndDate();
+        $readyStart = $readyInterval->getStartDate();
+        $readyEnd = $readyInterval->getEndDate();
+        $newStart = $newInterval->getStartDate();
+        $newEnd = $newInterval->getEndDate();
 
         if ($readyStart <= $newStart && $readyEnd >= $newEnd)
         { // #6 readyInterval START-END range is wide and include already existing ranges ($newInterval)
@@ -127,7 +127,7 @@ class IntervalDispatcher implements IntervalActionsInterface, IntervalTypeInterf
             $alg = new OuterEndStartIntersect($readyInterval, $newInterval);
             $intervals = $alg->doCalc()->getIntervals();
         }
-        elseif ($readyStart->sub($oneDayInterval) == $newEnd)
+        elseif ((clone $readyStart)->sub($oneDayInterval) == $newEnd)
         { // #3 readyInterval START JOINS existing END
             $alg = new OuterStartNearEnd($readyInterval, $newInterval);
             $intervals = $alg->doCalc()->getIntervals();
@@ -137,7 +137,7 @@ class IntervalDispatcher implements IntervalActionsInterface, IntervalTypeInterf
             $alg = new OuterStartEndIntersect($readyInterval, $newInterval);
             $intervals = $alg->doCalc()->getIntervals();
         }
-        elseif ($readyEnd->add($oneDayInterval) == $newStart)
+        elseif ((clone $readyEnd)->add($oneDayInterval) == $newStart)
         { // #5 readyInterval END JOINS existing START
             $alg = new OuterEndNearStart($readyInterval, $newInterval);
             $intervals = $alg->doCalc()->getIntervals();
@@ -158,7 +158,7 @@ class IntervalDispatcher implements IntervalActionsInterface, IntervalTypeInterf
             $intervals = $alg->doCalc()->getIntervals();
         }
         elseif ($readyStart > $newStart && $readyEnd < $newEnd)
-        { // #1 INNER: readyInterval somewhere between start and end of the newInterval
+        { // #1 INNER: readyInterval somewhere between start and end of the existingInterval
             $alg = new BetweenStartEnd($readyInterval, $newInterval);
             $intervals = $alg->doCalc()->getIntervals();
         }

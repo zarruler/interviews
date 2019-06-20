@@ -98,17 +98,17 @@ class IntervalController extends Controller implements IntervalActionsInterface
 
     public function edit()
     {
-        $startDate = $this->request->get('start_date');
-        $endDate = $this->request->get('end_date');
-        $price = $this->request->get('price');
-        $id = $this->request->get('id');
+        $formStartDate = $this->request->get('start_date');
+        $formEndDate = $this->request->get('end_date');
+        $formPrice = $this->request->get('price');
+        $formId = $this->request->get('id');
 
         $header = $this->container->get(Header::class);
         $fields = [
-            'start_date' => $startDate,
-            'end_date' => $endDate,
-            'price' => $price,
-            'id' => $id,
+            'start_date' => $formStartDate,
+            'end_date' => $formEndDate,
+            'price' => $formPrice,
+            'id' => $formId,
         ];
 
         $validator = (new ValidatorFactory())->make($fields, [
@@ -127,19 +127,19 @@ class IntervalController extends Controller implements IntervalActionsInterface
          * @var $intervalModel \App\Models\Interval
          */
         $intervalModel = $this->getModel('Interval');
-        $data = $intervalModel->getIntervals($startDate, $endDate);
+        $data = $intervalModel->getIntervals($formStartDate, $formEndDate);
 
         $newInterval = new IntervalValue([
             'id' => 0,
-            'start_date' => (new \DateTime($startDate))->format(ModelRecord::DEFAULT_DATE_FORMAT),
-            'end_date' => (new \DateTime($endDate))->format(ModelRecord::DEFAULT_DATE_FORMAT),
-            'price' => $price
+            'start_date' => (new \DateTime($formStartDate))->format(ModelRecord::DEFAULT_DATE_FORMAT),
+            'end_date' => (new \DateTime($formEndDate))->format(ModelRecord::DEFAULT_DATE_FORMAT),
+            'price' => $formPrice
         ]);
 
         $dispatcher = new IntervalDispatcher($newInterval);
 
-        foreach ($data as $id => $dbInterval) {
-            if ($dbInterval->getId() == $id) {
+        foreach ($data as $dbInterval) {
+            if ($dbInterval->getId() == $formId) {
                 $dbInterval->setAction(self::DELETE_ACTION);
                 $dispatcher->injectInterval($dbInterval);
             } else {
@@ -183,6 +183,7 @@ class IntervalController extends Controller implements IntervalActionsInterface
             ];
             $header->sendCode($data, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+
         return true;
 
     }
