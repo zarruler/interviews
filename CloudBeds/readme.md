@@ -51,5 +51,5 @@ in case of unions and other possible queries BUT
     about the performance priority said nothing in the task  
     
 #### How to use
-* click some buttons on the web frontend http://seugenev.dhostingsites.com/
+* click some buttons on the web frontend
 * use some handy tools like Restlet client to use as API manually        
