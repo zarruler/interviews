@@ -26,10 +26,22 @@ return [
                     RouteConfigKeys::CONTROLLER_ACTION => 'add'
                 ],
                 [
-                    RouteConfigKeys::ROUTE => '/interval/deleteall',
-                    RouteConfigKeys::HTTP_METHOD => 'GET',
+                    RouteConfigKeys::ROUTE => '/interval/{id:\d+}',
+                    RouteConfigKeys::HTTP_METHOD => 'DELETE',
+                    RouteConfigKeys::CONTROLLER => App\Controllers\IntervalController::class,
+                    RouteConfigKeys::CONTROLLER_ACTION => 'deleteOne'
+                ],
+                [
+                    RouteConfigKeys::ROUTE => '/interval/all',
+                    RouteConfigKeys::HTTP_METHOD => 'DELETE',
                     RouteConfigKeys::CONTROLLER => App\Controllers\IntervalController::class,
                     RouteConfigKeys::CONTROLLER_ACTION => 'deleteAll'
+                ],
+                [
+                    RouteConfigKeys::ROUTE => '/interval/edit',
+                    RouteConfigKeys::HTTP_METHOD => 'PUT',
+                    RouteConfigKeys::CONTROLLER => App\Controllers\IntervalController::class,
+                    RouteConfigKeys::CONTROLLER_ACTION => 'edit'
                 ],
             ]
         ],
@@ -37,7 +49,7 @@ return [
         RouteConfigKeys::GROUP_BASE => '/',
         RouteConfigKeys::GROUP_ITEMS => [
             [
-                RouteConfigKeys::ROUTE => 'index',
+                RouteConfigKeys::ROUTE => '',
                 RouteConfigKeys::HTTP_METHOD => 'GET',
                 RouteConfigKeys::CONTROLLER => App\Controllers\IntervalController::class,
                 RouteConfigKeys::CONTROLLER_ACTION => 'index'

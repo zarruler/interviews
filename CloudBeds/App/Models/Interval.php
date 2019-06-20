@@ -45,12 +45,28 @@ class Interval extends Model
      */
     public function getIntervals($startDate, $endDate)
     {
+        // query for the task request "As minimum queries to DB as possible"
         $query = "
             SELECT *
             FROM " . $this->tableName . " 
             WHERE (DATE_SUB(:start_date, INTERVAL 1 DAY) BETWEEN start_date AND end_date)
                OR (DATE_ADD(:end_date, INTERVAL 1 DAY) BETWEEN start_date AND end_date)
                OR (:start_date <= start_date AND :end_date >= end_date)
+        ";
+
+        // this one uses indexes but it is 3 queries :) any ways for millions of records it will be faster
+        $productionQuery = "
+            SELECT *
+            FROM " . $this->tableName . " 
+            WHERE (DATE_SUB(:start_date, INTERVAL 1 DAY) BETWEEN start_date AND end_date)
+          UNION
+            SELECT *
+            FROM " . $this->tableName . " 
+            WHERE (DATE_ADD(:end_date, INTERVAL 1 DAY) BETWEEN start_date AND end_date)
+          UNION
+            SELECT *
+            FROM " . $this->tableName . " 
+            WHERE (:start_date <= start_date AND :end_date >= end_date)
         ";
 
         $params = [
@@ -62,6 +78,12 @@ class Interval extends Model
         return $data;
     }
 
+    /**
+     * Insert Interval
+     *
+     * @param IntervalValue $newRecord
+     * @throws \Core\Exceptions\InvalidDateTimeFormat
+     */
     public function add(IntervalValue $newRecord)
     {
 
@@ -76,6 +98,12 @@ class Interval extends Model
         $this->insert($query, $params, $newRecord);
     }
 
+    /**
+     * Update Interval
+     *
+     * @param IntervalValue $updateRecord
+     * @throws \Core\Exceptions\InvalidDateTimeFormat
+     */
     public function edit(IntervalValue $updateRecord)
     {
         $query = "UPDATE " . $this->tableName . "

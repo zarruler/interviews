@@ -36,7 +36,20 @@ execute `dump.sql`
 1) tests not written :(
 2) not uploaded to some hosting i dont have smth normal but free have different limits strange settings etc.
 you can easily test it by running docker as explained above. 
-      
+
+#### Notes
+1) in the task description was mentioned to use less possible queries.   
+only because of this was used conditional query which doesnt use indexes.  
+on the production i would better use `UNION` but with the indexes.
+2) table has simple indexes on dates.  
+according to the task requirements could be used UNIQUE indexes which should work faster 
+in case of unions and other possible queries BUT
+    - requirements could be changed later
+    - in the code will be required to DELETE first and only then UPDATE/INSERT to avoid constraint violations  
+
+    so i decided to use just INDEX/KEY instead of UNIQUE - it is more kind of "safe".   
+    about the performance priority said nothing in the task  
+    
 #### How to use
-* click some buttons on the web frontend 
+* click some buttons on the web frontend http://seugenev.dhostingsites.com/
 * use some handy tools like Restlet client to use as API manually        

@@ -38,6 +38,26 @@ class IntervalDispatcher implements IntervalActionsInterface, IntervalTypeInterf
     }
 
     /**
+     * inject interval in the $this->readyIntervals directly without implementing strategy
+     * WARNING : use it careful to not crash the algorithm
+     * preferable use it to ONLY inject intervals with the action=DELETE_ACTION
+     *
+     * @param IntervalPriceInterface $newInterval
+     * @param bool $isActionDelete
+     * @return bool
+     */
+    public function injectInterval(IntervalPriceInterface $newInterval, $isActionDelete = true) : bool
+    {
+        if($isActionDelete && $newInterval->getAction() != self::DELETE_ACTION)
+            return false;
+
+        $this->readyIntervals[$newInterval->getUid()] = $newInterval;
+
+        return true;
+    }
+
+    /**
+     * adding interval and recalculate ready intervals according to some strategy
      *
      * @param IntervalPriceInterface $newInterval interval from the database
      */

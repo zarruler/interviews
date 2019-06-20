@@ -1,8 +1,11 @@
 {% extends 'layout.twig' %}
 
+{% block css %}
+{% endblock %}
+
 {% block js %}
-<script src="https://www.jsviews.com/download/jsrender.min.js"></script>
-<script src="/js/intervals.js"></script>
+    <script src="https://www.jsviews.com/download/jsrender.min.js"></script>
+    <script src="/js/intervals.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -47,7 +50,7 @@
                         <div class="field">
                             <label class="label">End Date</label>
                             <div class="control">
-                                <input class="input" type="date" name="end_date">
+                                <input class="input" id="end_dt" type="date" name="end_date">
                             </div>
                             <p class="help is-danger" id="end_date_message"></p>
                         </div>
@@ -62,6 +65,7 @@
                             <a class="button is-warning" id="cancel_btn" style="margin-right: 25px;">Cancel</a>
                             <a id="save" class="button is-info">Save</a>
                         </div>
+                        <input type="hidden" name="id" value="">
                     </form>
                 </div>
                 <button class="modal-close is-large" aria-label="close"></button>
@@ -79,6 +83,8 @@
         <td data-field='end_date'>{{>end_date}}</td>
         <td data-field='price'>{{>price}}</td>
         <td>
+            <a class="delete-interval" style="color:red; float: right;"><span class="icon"><i class="fas fa-trash-alt"></i></span></a>
+            <a class="edit-interval" style="color: orange; float: right; margin-right: 15px;"><span class="icon"><i class="fas fa-edit"></i></span></a>
         </td>
     </tr>
 {{/for}}
